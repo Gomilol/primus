@@ -13,3 +13,6 @@
 Debug/supremacy_csgo.tlog/unsuccessfulbuild
 *.idb
 *.pdb
+Debug/_IsIncrementalBuild
+*.tlog
+*.ilk
