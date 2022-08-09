@@ -14,7 +14,7 @@ namespace render {
 void render::init() {
 	menu = Font(XOR("Tahoma"), 12, FW_NORMAL, FONTFLAG_NONE);
 	menu_shade = Font(XOR("Tahoma"), 12, FW_NORMAL, FONTFLAG_DROPSHADOW);
-	esp = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_DROPSHADOW | FONTFLAG_ANTIALIAS);
+	esp = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	esp_small = Font(XOR("Small Fonts"), 8, FW_NORMAL, FONTFLAG_OUTLINE);
 	hud = Font(XOR("Tahoma"), 16, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	hudster = Font(XOR("Verdana"), 12, FW_BLACK, FONTFLAG_ANTIALIAS);
