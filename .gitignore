@@ -3,3 +3,13 @@
 *.db-shm
 *.opendb
 *.db-wal
+*.vsidx
+*.lock
+.vs/supremacy_csgo/v17/.suo
+*.ipch
+*.obj
+*.log
+*.lastbuildstate
+Debug/supremacy_csgo.tlog/unsuccessfulbuild
+*.idb
+*.pdb
