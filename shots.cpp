@@ -169,12 +169,12 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	g_csgo.m_engine_trace->ClipRayToEntity( Ray( start, end ), MASK_SHOT, target, &trace );
 
 	// we did not hit jackshit, or someone else.
-	if ( !trace.m_entity || !trace.m_entity->IsPlayer( ) || trace.m_entity != target )
-		g_notify.add( XOR( "shot missed due to spread\n" ) );
+//	if ( !trace.m_entity || !trace.m_entity->IsPlayer( ) || trace.m_entity != target )
+		//g_notify.add( XOR( "shot missed due to spread\n" ) );
 
 	// we should have 100% hit this player..
 	// this is a miss due to wrong angles.
-	else if ( trace.m_entity == target ) {
+	 if ( trace.m_entity == target ) {
 		size_t mode = shot->m_record->m_mode;
 
 		// if we miss a shot on body update.
