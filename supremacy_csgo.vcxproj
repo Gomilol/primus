@@ -279,6 +279,7 @@
     <ClInclude Include="tab.h" />
     <ClInclude Include="tinyformat.h" />
     <ClInclude Include="trace.h" />
+    <ClInclude Include="undefeated.h" />
     <ClInclude Include="unique_vector.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="utlvector.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="vector3.h" />
     <ClInclude Include="visuals.h" />
     <ClInclude Include="vmt.h" />
+    <ClInclude Include="weaponicon.h" />
     <ClInclude Include="winapir.h" />
     <ClInclude Include="x86.h" />
     <ClInclude Include="xorstr.h" />

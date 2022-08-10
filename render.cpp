@@ -1,5 +1,6 @@
 #include "includes.h"
-
+#include "weaponicon.h"
+#include "undefeated.h"
 namespace render {
 	Font menu;;
 	Font menu_shade;;
@@ -11,14 +12,21 @@ namespace render {
 	Font indicator;;
 }
 
+void LoadFontFromResource(char* arr, const size_t size) {
+	DWORD n_fonts;
+	AddFontMemResourceEx(arr, size, nullptr, &n_fonts);
+}
+
 void render::init() {
+	LoadFontFromResource(weaponicons, sizeof(weaponicons));
+	AddFontMemResourceEx((void*)undefeated, sizeof(undefeated), nullptr, &g_hooks.undefeated2);
 	menu = Font(XOR("Tahoma"), 12, FW_NORMAL, FONTFLAG_NONE);
 	menu_shade = Font(XOR("Tahoma"), 12, FW_NORMAL, FONTFLAG_DROPSHADOW);
 	esp = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	esp_small = Font(XOR("Small Fonts"), 8, FW_NORMAL, FONTFLAG_OUTLINE);
 	hud = Font(XOR("Tahoma"), 16, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	hudster = Font(XOR("Verdana"), 12, FW_BLACK, FONTFLAG_ANTIALIAS);
-	cs = Font(XOR("Counter-Strike"), 28, FW_MEDIUM, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
+	cs = Font(XOR("WeaponIcons"), 14, FW_NORMAL, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	indicator = Font(XOR("Verdana"), 26, FW_BOLD, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 }
 

@@ -415,7 +415,7 @@ public:
 	MultiDropdown flags_enemy;
 	MultiDropdown flags_friendly;
 	MultiDropdown weapon;
-	Dropdown      weapon_mode;
+	MultiDropdown      weapon_mode;
 	Checkbox      ammo;
 	Colorpicker   ammo_color;		
 	Checkbox      lby_update;

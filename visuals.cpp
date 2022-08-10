@@ -978,10 +978,10 @@ void Visuals::DrawPlayer( Player* player ) {
 					}
 
 					// text.
-					if( g_menu.main.players.weapon_mode.get( ) == 0 ) {
+					if( g_menu.main.players.weapon_mode.get(0) && !g_menu.main.players.weapon_mode.get(1)) {
 						// construct std::string instance of localized weapon name.
 						std::string name{ weapon->GetLocalizedName( ) };
-
+						
 						// smallfonts needs upper case.
 						std::transform( name.begin( ), name.end( ), name.begin( ), ::toupper );
 
@@ -989,14 +989,32 @@ void Visuals::DrawPlayer( Player* player ) {
 					}
 
 					// icons.
-					else if( g_menu.main.players.weapon_mode.get( ) == 1 ) {
+					 if( g_menu.main.players.weapon_mode.get(1) && !g_menu.main.players.weapon_mode.get(0)){
 						// icons are super fat..
 						// move them back up.
-						offset -= 5;
+						 offset -= 5;
 
-						std::string icon = tfm::format( XOR( "%c" ), m_weapon_icons[ weapon->m_iItemDefinitionIndex( ) ] );
+						std::string icon = tfm::format( XOR( "%c" ), GetWeaponIcon(weapon->m_iItemDefinitionIndex()));
 						render::cs.string( box.x + box.w / 2, box.y + box.h + offset, { 255, 255, 255, low_alpha }, icon, render::ALIGN_CENTER );
 					}
+					 if (g_menu.main.players.weapon_mode.get(0) && g_menu.main.players.weapon_mode.get(1)) {
+						 // construct std::string instance of localized weapon name.
+						 offset -= 9;
+
+						 std::string name{ weapon->GetLocalizedName() };
+
+						 // smallfonts needs upper case.
+						 std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+
+						 render::esp_small.string(box.x + box.w / 2, box.y + box.h + offset, { 255, 255, 255, low_alpha }, name, render::ALIGN_CENTER);
+
+						 // icons are super fat..
+					 // move them back up.
+						 offset += 8;
+
+						 std::string icon = tfm::format(XOR("%c"), GetWeaponIcon(weapon->m_iItemDefinitionIndex()));
+						 render::cs.string(box.x + box.w / 2, box.y + box.h + offset, { 255, 255, 255, low_alpha }, icon, render::ALIGN_CENTER);
+					 }
 				}
 			}
 		}

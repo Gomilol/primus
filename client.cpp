@@ -475,7 +475,7 @@ void Client::print( const std::string text, ... ) {
 	va_end( list );
 
 	// print to console.
-	g_csgo.m_cvar->ConsoleColorPrintf( colors::burgundy, XOR( "[supremacy] " ) );
+	g_csgo.m_cvar->ConsoleColorPrintf( g_menu.main.config.menu_color.get(), XOR("[supremacy] "));
 	g_csgo.m_cvar->ConsoleColorPrintf( colors::white, buf.c_str( ) );
 }
 
