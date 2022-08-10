@@ -334,7 +334,7 @@ void Visuals::StatusIndicators( ) {
 	}
 
 	// PING
-	if( g_menu.main.visuals.indicators.get( 2 ) ) {
+	if( g_menu.main.visuals.indicators.get( 2 ) && g_input.GetKeyState(g_menu.main.misc.fake_latency.get())) {
 		Indicator_t ind{ };
 		ind.color = g_aimbot.m_fake_latency ? 0xff15c27b : 0xff0000ff;
 		ind.text = XOR( "PING" );
