@@ -620,6 +620,23 @@ void Aimbot::find( ) {
 		// write data, needed for traces / etc.
 		m_record->cache( );
 
+		if (m_targets.size() >= 3)
+		{
+			auto first = rand() % m_targets.size();
+			auto second = rand() % m_targets.size();
+			auto third = rand() % m_targets.size();
+
+			for (auto i = 0; i < m_targets.size(); ++i)
+			{
+				if (i == first || i == second || i == third)
+					continue;
+
+				m_targets.erase(m_targets.begin() + i);
+
+				if (i > 0)
+					--i;
+			}
+		}
 		// set autostop shit.
 		m_stop = !( g_cl.m_buttons & IN_JUMP );
 

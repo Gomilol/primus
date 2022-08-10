@@ -56,7 +56,8 @@ bool LagCompensation::StartPrediction( AimPlayer* data ) {
 								  : game::TIME_TO_TICKS( data->m_records[ 1 ]->m_sim_time - data->m_records[ 2 ]->m_sim_time );
 
 	// clamp this just to be sure.
-	math::clamp( lag, 1, 15 );
+	math::clamp(lag, 1, 14);
+
 
 	// get the delta in ticks between the last server net update
 	// and the net update on which we created this record.
@@ -192,7 +193,7 @@ bool LagCompensation::StartPrediction( AimPlayer* data ) {
 				// compute the ideal strafe angle for this velocity.
 				float speed2d = record->m_pred_velocity.length_2d( );
 				float ideal   = ( speed2d > 0.f ) ? math::rad_to_deg( std::asin( 15.f / speed2d ) ) : 90.f;
-				math::clamp( ideal, 0.f, 90.f );
+				math::clamp(ideal, 0.f, 90.f);
 
 				float smove = 0.f;
 				float abschange = std::abs( change );
