@@ -120,6 +120,13 @@ public:
 		return *this;
 	}
 
+	__forceinline bool  IsZero(float tolerance = 0.01f) const
+	{
+		return (this->x > -tolerance && this->x < tolerance&&
+			this->y > -tolerance && this->y < tolerance&&
+			this->z > -tolerance && this->z < tolerance);
+	}
+
 	// arithmetic operators w/ float.
 	__forceinline vec3_t operator+( float f ) const {
 		return {

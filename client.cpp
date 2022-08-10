@@ -192,7 +192,7 @@ void Client::DoMove( ) {
 	g_movement.JumpRelated( );
 	g_movement.Strafe( );
 	g_movement.FakeWalk( );
-	g_movement.AutoPeek( );
+	g_movement.AutoPeek(g_cl.m_cmd, m_strafe_angles.y);
 
 
 

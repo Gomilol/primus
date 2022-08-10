@@ -457,26 +457,65 @@ void Movement::FixMove(CUserCmd* cmd, ang_t& wish_angles) {
 		cmd->m_buttons &= ~(IN_FORWARD | IN_BACK | IN_MOVERIGHT | IN_MOVELEFT);
 }
 
-void Movement::AutoPeek( ) {
-	// set to invert if we press the button.
-	if( g_input.GetKeyState( g_menu.main.movement.autopeek.get( ) ) ) {
-		if( g_cl.m_old_shot )
-			m_invert = true;
+void Movement::AutoPeek(CUserCmd* cmd, float wish_yaw) {
+	if (g_input.GetKeyState(g_menu.main.movement.autopeek.get())) {
+		if (start_position.IsZero()) {
+			start_position = g_cl.m_local->GetAbsOrigin();
 
-		vec3_t move{ g_cl.m_cmd->m_forward_move, g_cl.m_cmd->m_side_move, 0.f };
+			if (!(g_cl.m_flags & FL_ONGROUND)) {
+				CTraceFilterWorldOnly filter;
+				CGameTrace trace;
 
-		if( m_invert ) {
-			move *= -1.f;
-			g_cl.m_cmd->m_forward_move = move.x;
-			g_cl.m_cmd->m_side_move = move.y;
+				g_csgo.m_engine_trace->TraceRay(Ray(start_position, start_position - vec3_t(0.0f, 0.0f, 1000.0f)), MASK_SOLID, &filter, &trace);
+
+				if (trace.m_fraction < 1.0f)
+					start_position = trace.m_endpos + vec3_t(0.0f, 0.0f, 2.0f);
+			}
+		}
+		else {
+			bool revolver_shoot = g_cl.m_weapon_id == REVOLVER && !g_cl.m_revolver_fire && (cmd->m_buttons & IN_ATTACK || cmd->m_buttons & IN_ATTACK2);
+
+			if (g_cl.m_old_shot)
+				fired_shot = true;
+
+			if (fired_shot) {
+				vec3_t current_position = g_cl.m_local->GetAbsOrigin();
+				vec3_t difference = current_position - start_position;
+
+				if (difference.length_2d() > 5.0f && difference.length_2d() < 300.0f) {
+					vec3_t velocity = vec3_t(difference.x * cos(wish_yaw / 180.0f * math::pi) + difference.y * sin(wish_yaw / 180.0f * math::pi), difference.y * cos(wish_yaw / 180.0f * math::pi) - difference.x * sin(wish_yaw / 180.0f * math::pi), difference.z);
+
+					if (difference.length_2d() < 50.0f) {
+						cmd->m_forward_move = -velocity.x * 20.0f;
+						cmd->m_side_move = velocity.y * 20.0f;
+					}
+					else if (difference.length_2d() < 100.0f) {
+						cmd->m_forward_move = -velocity.x * 10.0f;
+						cmd->m_side_move = velocity.y * 10.0f;
+					}
+					else if (difference.length_2d() < 150.0f) {
+						cmd->m_forward_move = -velocity.x * 5.0f;
+						cmd->m_side_move = velocity.y * 5.0f;
+					}
+					else if (difference.length_2d() < 250.0f) {
+						cmd->m_forward_move = -velocity.x * 2.0f;
+						cmd->m_side_move = velocity.y * 2.0f;
+					}
+					else {
+						cmd->m_forward_move = -velocity.x * 1.0f;
+						cmd->m_side_move = velocity.y * 1.0f;
+					}
+				}
+				else {
+					fired_shot = false;
+					start_position.clear();
+				}
+			}
 		}
 	}
-
-	else m_invert = false;
-
-	bool can_stop = g_menu.main.movement.autostop_always_on.get( ) || ( !g_menu.main.movement.autostop_always_on.get( ) && g_input.GetKeyState( g_menu.main.movement.autostop.get( ) ) );
-	if( ( g_input.GetKeyState( g_menu.main.movement.autopeek.get( ) ) || can_stop ) && g_aimbot.m_stop ) {
-		Movement::QuickStop( );
+	else {
+		fired_shot = false;
+		start_position.clear();
 	}
 }
 

@@ -13,6 +13,8 @@ public:
 	float  m_old_yaw;
 	float  m_circle_yaw;
 	bool   m_invert;
+	bool fired_shot;
+	vec3_t start_position = vec3_t(0.0f, 0.0f, 0.0f);
 
 public:
 	void Stop(float speed);
@@ -23,7 +25,7 @@ public:
 	bool GetClosestPlane( vec3_t& plane );
 	bool WillCollide( float time, float step );
 	void FixMove(CUserCmd* cmd, ang_t& old_angles);
-	void AutoPeek( );
+	void AutoPeek(CUserCmd* cmd, float wish_yaw);
 	void QuickStop( );
 	void ClampMovementSpeed(float speed);
 	void FakeWalk( );
