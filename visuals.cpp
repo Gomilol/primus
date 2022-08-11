@@ -325,7 +325,7 @@ void Visuals::StatusIndicators( ) {
 	// LBY
 	if( g_menu.main.visuals.indicators.get( 0 ) ) {
 		// get the absolute change between current lby and animated angle.
-		float change = std::abs( math::NormalizedAngle( g_cl.m_body - g_cl.m_angle.y ) );
+		float change = std::abs( math::NormalizedAngle( g_cl.m_body - g_cl.m_angle.y ) ); // practice test for fucking idiot
 
 		Indicator_t ind{ };
 		ind.color = change > 35.f ? 0xff15c27b : 0xff0000ff;
