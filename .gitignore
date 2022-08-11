@@ -16,3 +16,4 @@ Debug/supremacy_csgo.tlog/unsuccessfulbuild
 Debug/_IsIncrementalBuild
 *.tlog
 *.ilk
+*.vcxproj
