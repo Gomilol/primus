@@ -296,7 +296,7 @@ bool Grenades::detonate( size_t tick, CGameTrace& trace ) {
 	// speed <= 0.2
 	// checked every 0.2s
 
-	// CBaseCSGrenadeProjectile::SetDetonateTimerLength
+	// CBaseCSGrenadeProjectile::SetDetonateTimerLength	
 	// auto detonate at 1.5s
 	// checked every 0.2s
 
