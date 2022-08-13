@@ -218,37 +218,58 @@ void Client::DoMove( ) {
 	// store weapon stuff.
 	m_weapon = m_local->GetActiveWeapon( );
 
-	if( m_weapon ) {
-		m_weapon_info = m_weapon->GetWpnData( );
-		m_weapon_id = m_weapon->m_iItemDefinitionIndex( );
+	
+	if (m_weapon) {
+		m_weapon_info = m_weapon->GetWpnData();
+		m_weapon_id = m_weapon->m_iItemDefinitionIndex();
 		m_weapon_type = m_weapon_info->m_weapon_type;
 
 		// ensure weapon spread values / etc are up to date.
-		if( m_weapon_type != WEAPONTYPE_GRENADE )
-			m_weapon->UpdateAccuracyPenalty( );
+		if (m_weapon_type != WEAPONTYPE_GRENADE)
+			m_weapon->UpdateAccuracyPenalty();
+
+		auto is_special_weapon = m_weapon_id == 9
+			|| m_weapon_id == 11
+			|| m_weapon_id == 38
+			|| m_weapon_id == 40;
+
+		g_inputpred.m_perfect_accuracy = 0.f;
+
+		if (m_weapon_id == SSG08 && (g_cl.m_local->m_fFlags() & FL_ONGROUND) == 0)
+			g_inputpred.m_perfect_accuracy = 0.00875f;
+		else if (g_cl.m_local->m_fFlags() & FL_DUCKING) {
+			if (is_special_weapon)
+				g_inputpred.m_perfect_accuracy = m_weapon_info->m_inaccuracy_crouch_alt;
+			else
+				g_inputpred.m_perfect_accuracy = m_weapon_info->m_inaccuracy_crouch;
+		}
+		else if (is_special_weapon)
+			g_inputpred.m_perfect_accuracy = m_weapon_info->m_inaccuracy_stand_alt;
+		else
+			g_inputpred.m_perfect_accuracy = m_weapon_info->m_inaccuracy_stand;
 
 		// run autowall once for penetration crosshair if we have an appropriate weapon.
-		if( m_weapon_type != WEAPONTYPE_KNIFE && m_weapon_type != WEAPONTYPE_C4 && m_weapon_type != WEAPONTYPE_GRENADE ) {
+		if (m_weapon_type != WEAPONTYPE_KNIFE && m_weapon_type != WEAPONTYPE_C4 && m_weapon_type != WEAPONTYPE_GRENADE) {
 			penetration::PenetrationInput_t in;
 			in.m_from = m_local;
 			in.m_target = nullptr;
-			in.m_pos = m_shoot_pos + ( m_forward_dir * m_weapon_info->m_range );
+			in.m_pos = m_shoot_pos + (m_forward_dir * m_weapon_info->m_range);
 			in.m_damage = 1.f;
 			in.m_damage_pen = 1.f;
 			in.m_can_pen = true;
 
 			// run autowall.
-			penetration::run( &in, &tmp_pen_data );
+			penetration::run(&in, &tmp_pen_data);
 		}
 
 		// set pen data for penetration crosshair.
 		m_pen_data = tmp_pen_data;
 
 		// can the player fire.
-		m_player_fire = g_csgo.m_globals->m_curtime >= m_local->m_flNextAttack( ) && !g_csgo.m_gamerules->m_bFreezePeriod( ) && !( g_cl.m_flags & FL_FROZEN );
+		m_player_fire = g_csgo.m_globals->m_curtime >= m_local->m_flNextAttack() && !g_csgo.m_gamerules->m_bFreezePeriod() && !(g_cl.m_flags & FL_FROZEN);
 
-		UpdateRevolverCock( );
-		m_weapon_fire = CanFireWeapon( );
+		UpdateRevolverCock();
+		m_weapon_fire = CanFireWeapon(game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase()));
 	}
 
 	// last tick defuse.
@@ -479,45 +500,83 @@ void Client::print( const std::string text, ... ) {
 	g_csgo.m_cvar->ConsoleColorPrintf( colors::white, buf.c_str( ) );
 }
 
-bool Client::CanFireWeapon( ) {
+bool Client::CanFireWeapon() {
 	// the player cant fire.
-	if( !m_player_fire )
+	if (!m_player_fire)
 		return false;
 
-	if( m_weapon_type == WEAPONTYPE_GRENADE )
+	if (m_weapon_type == WEAPONTYPE_GRENADE)
 		return false;
 
 	// if we have no bullets, we cant shoot.
-	if( m_weapon_type != WEAPONTYPE_KNIFE && m_weapon->m_iClip1( ) < 1 )
+	if (m_weapon_type != WEAPONTYPE_KNIFE && m_weapon->m_iClip1() < 1)
 		return false;
 
 	// do we have any burst shots to handle?
-	if( ( m_weapon_id == GLOCK || m_weapon_id == FAMAS ) && m_weapon->m_iBurstShotsRemaining( ) > 0 ) {
+	if ((m_weapon_id == GLOCK || m_weapon_id == FAMAS) && m_weapon->m_iBurstShotsRemaining() > 0) {
 		// new burst shot is coming out.
-		if( g_csgo.m_globals->m_curtime >= m_weapon->m_fNextBurstShot( ) )
+		if (g_csgo.m_globals->m_curtime >= m_weapon->m_fNextBurstShot())
 			return true;
 	}
 
 	// r8 revolver.
-	if( m_weapon_id == REVOLVER ) {
-		int act = m_weapon->m_Activity( );
+	if (m_weapon_id == REVOLVER) {
+		int act = m_weapon->m_Activity();
 
 		// mouse1.
-		if( !m_revolver_fire ) {
-			if( ( act == 185 || act == 193 ) && m_revolver_cock == 0 )
-				return g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack( );
+		if (!m_revolver_fire) {
+			if ((act == 185 || act == 193) && m_revolver_cock == 0)
+				return g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack();
 
 			return false;
 		}
 	}
 
 	// yeez we have a normal gun.
-	if( g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack( ) )
+	if (g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack())
 		return true;
 
 	return false;
 }
 
+bool Client::CanFireWeapon(float curtime) {
+	// the player cant fire.
+	if (!m_player_fire)
+		return false;
+
+	if (m_weapon_type == WEAPONTYPE_GRENADE)
+		return false;
+
+	// if we have no bullets, we cant shoot.
+	if (m_weapon_type != WEAPONTYPE_KNIFE && m_weapon->m_iClip1() < 1)
+		return false;
+
+	// do we have any burst shots to handle?
+	if ((m_weapon_id == GLOCK || m_weapon_id == FAMAS) && m_weapon->m_iBurstShotsRemaining() > 0) {
+		// new burst shot is coming out.
+		if (g_csgo.m_globals->m_curtime >= m_weapon->m_fNextBurstShot())
+			return true;
+	}
+
+	// r8 revolver.
+	if (m_weapon_id == REVOLVER) {
+		int act = m_weapon->m_Activity();
+
+		// mouse1.
+		if (!m_revolver_fire) {
+			if ((act == 185 || act == 193) && m_revolver_cock == 0)
+				return g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack();
+
+			return false;
+		}
+	}
+
+	// yeez we have a normal gun.
+	if (g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack())
+		return true;
+
+	return false;
+}
 void Client::UpdateRevolverCock( ) {
 	// default to false.
 	m_revolver_fire = false;

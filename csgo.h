@@ -193,6 +193,14 @@ namespace game {
 		return false;
 	}
 
+	__forceinline const char* GetPlayerName(int index) {
+		player_info_t info;
+		if (g_csgo.m_engine->GetPlayerInfo(index, &info))
+			return info.m_name;
+
+		return nullptr;
+	}
+
 	__forceinline bool IsValidHitgroup(int index) {
 		if ((index >= HITGROUP_HEAD && index <= HITGROUP_RIGHTLEG) || index == HITGROUP_GEAR)
 			return true;
@@ -202,8 +210,8 @@ namespace game {
 
 	// note - dex; all of the static sigscans here should be moved to CSGO class... funcs that rely on these do 2 test statements to make sure the data is initialized
 	//             also, nitro, is there a reason these are not __forceinline? i forget if you told me they must be inline.
-	inline void CreateAnimationState(Player *holder, CCSGOPlayerAnimState *state) {
-		using CreateAnimState_t = void(__thiscall *)(CCSGOPlayerAnimState *, Player *);
+	inline void CreateAnimationState(CCSGOPlayerAnimState* state, Player* holder) {
+		using CreateAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*, Player*);
 
 		static auto func = pattern::find(g_csgo.m_client_dll, XOR("55 8B EC 56 8B F1 B9 ? ? ? ? C7 46")).as< CreateAnimState_t >();
 		if (!func)
@@ -212,7 +220,7 @@ namespace game {
 		func(state, holder);
 	}
 
-	inline void UpdateAnimationState(CCSGOPlayerAnimState *state, ang_t ang) {
+	inline void UpdateAnimationState(CCSGOPlayerAnimState* state, ang_t ang) {
 		static auto func = pattern::find(g_csgo.m_client_dll, XOR("E8 ? ? ? ? 0F 57 C0 0F 11 86")).rel32< uintptr_t >(0x1);
 		if (!func)
 			return;
@@ -226,8 +234,8 @@ namespace game {
 		}
 	}
 
-	inline void ResetAnimationState(CCSGOPlayerAnimState *state) {
-		using ResetAnimState_t = void(__thiscall *)(CCSGOPlayerAnimState *);
+	inline void ResetAnimationState(CCSGOPlayerAnimState* state) {
+		using ResetAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*);
 
 		static auto func = pattern::find(g_csgo.m_client_dll, XOR("56 6A 01 68 ? ? ? ? 8B F1")).as< ResetAnimState_t >();
 		if (!func)
@@ -236,7 +244,7 @@ namespace game {
 		func(state);
 	}
 
-	__forceinline void UTIL_ClipTraceToPlayers(const vec3_t &start, const vec3_t &end, uint32_t mask, ITraceFilter *filter, CGameTrace *tr, float range) {
+	__forceinline void UTIL_ClipTraceToPlayers(const vec3_t& start, const vec3_t& end, uint32_t mask, ITraceFilter* filter, CGameTrace* tr, float range) {
 		static auto func = pattern::find(g_csgo.m_client_dll, XOR("E8 ? ? ? ? 83 C4 14 8A 56 37")).rel32< uintptr_t >(0x1);
 		if (!func)
 			return;
@@ -253,7 +261,7 @@ namespace game {
 		}
 	}
 
-	__forceinline void ConcatTransforms(const matrix3x4_t &in1, const matrix3x4_t &in2, matrix3x4_t &output) {
+	__forceinline void ConcatTransforms(const matrix3x4_t& in1, const matrix3x4_t& in2, matrix3x4_t& output) {
 		static auto func = pattern::find(g_csgo.m_client_dll, XOR("E8 ? ? ? ? 0F 28 44 24")).rel32< uintptr_t >(0x1);
 		if (!func)
 			return;
@@ -267,6 +275,15 @@ namespace game {
 		}
 	}
 
-	bool   IsBreakable(Entity *ent);
-	Beam_t *CreateGenericBeam(const BeamInfo_t &beam_info);
+	template<class T = DWORD>
+	__forceinline T* FindHudElement(const char* name) {
+		static auto pThis = *pattern::find(g_csgo.m_client_dll, XOR("B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08")).add(0x1).as< DWORD**>();
+
+		static auto find_hud_element = pattern::find(g_csgo.m_client_dll, ("55 8B EC 53 8B 5D 08 56 57 8B F9 33 F6 39")).as<DWORD(__thiscall*)(void*, const char*)>();
+		return (T*)find_hud_element(pThis, name);
+	}
+
+	bool   IsBreakable(Entity* ent);
+	Beam_t* CreateGenericBeam(const BeamInfo_t& beam_info);
+
 }

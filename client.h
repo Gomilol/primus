@@ -45,6 +45,7 @@ public:
 
 	// check if we are able to fire this tick.
 	bool CanFireWeapon( );
+	bool CanFireWeapon(float curtime);
 	void UpdateRevolverCock( );
 	void UpdateIncomingSequences( );
 

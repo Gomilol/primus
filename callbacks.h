@@ -15,13 +15,47 @@ namespace callbacks {
 	void ConfigLoad6( );
 	void ConfigLoad( );
 	void ConfigSave( );
+	bool IsWeaponGeneral();
+	bool IsWeaponAuto();
+	bool IsWeaponAWP();
+	bool IsWeaponScout();
+	bool IsWeaponPistol();
+	bool IsWeaponHeavy();
+	bool IsBaimHealth();
+	bool IsCorrecting();
+	bool IsAfterMisses();
+	bool IsFovOn();
+	bool IsHitchanceOnGeneral();
+	bool IsHitchanceOnAuto();
+	bool IsHitchanceOnAWP();
+	bool IsHitchanceOnScout();
+	bool IsHitchanceOnPistols();
+	bool IsHitchanceOnHeavy();
+	bool IsCustomOn();
 
-	bool IsBaimHealth( );
-	bool IsFovOn( );
-	bool IsHitchanceOn( );
-	bool IsPenetrationOn( );
-	bool IsMultipointOn( );
-	bool IsMultipointBodyOn( );
+	bool IsPenetrationOnGeneral();
+	bool IsMultipointOnGeneral();
+	bool IsMultipointBodyOnGeneral();
+
+	bool IsPenetrationOnAuto();
+	bool IsMultipointOnAuto();
+	bool IsMultipointBodyOnAuto();
+
+	bool IsPenetrationOnAWP();
+	bool IsMultipointOnAWP();
+	bool IsMultipointBodyOnAWP();
+
+	bool IsPenetrationOnScout();
+	bool IsMultipointOnScout();
+	bool IsMultipointBodyOnScout();
+
+	bool IsPenetrationOnPistols();
+	bool IsMultipointOnPistols();
+	bool IsMultipointBodyOnPistols();
+
+	bool IsPenetrationOnHeavy();
+	bool IsMultipointOnHeavy();
+	bool IsMultipointBodyOnHeavy();
 
 	bool IsAntiAimModeStand( );
 	bool HasStandYaw( );

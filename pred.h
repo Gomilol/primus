@@ -23,6 +23,8 @@ public:
 	void update( );
 	void run( );
 	void restore( );
+
+	float m_perfect_accuracy;
 };
 
 extern InputPrediction g_inputpred;

@@ -385,42 +385,281 @@ void AimPlayer::SetupHitboxes( LagRecord *record, bool history ) {
 	if ( only )
 		return;
 
-	std::vector< size_t > hitbox{ history ? g_menu.main.aimbot.hitbox_history.GetActiveIndices( ) : g_menu.main.aimbot.hitbox.GetActiveIndices( ) };
-	if ( hitbox.empty( ) )
-		return;
 
-	for ( const auto &h : hitbox ) {
-		// head.
-		if ( h == 0 )
-			m_hitboxes.push_back( { HITBOX_HEAD, HitscanMode::NORMAL } );
+	if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A) {
+		std::vector< size_t > hitbox{ history ? g_menu.main.aimbot.hitbox_history_pistols.GetActiveIndices() : g_menu.main.aimbot.hitbox_pistols.GetActiveIndices() };
+		if (hitbox.empty())
+			return;
 
-		// chest.
-		if ( h == 1 ) {
-			m_hitboxes.push_back( { HITBOX_THORAX, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_CHEST, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_UPPER_CHEST, HitscanMode::NORMAL } );
+	//	bool ignore_limbs = record->m_velocity.length_2d() > 71.f && g_menu.main.aimbot.ignor_limbs.get();
+
+		for (const auto& h : hitbox) {
+			// head.
+			if (h == 0)
+				m_hitboxes.push_back({ HITBOX_HEAD, HitscanMode::NORMAL });
+
+			// chest.
+			if (h == 1) {
+				m_hitboxes.push_back({ HITBOX_THORAX, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_CHEST, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_UPPER_CHEST, HitscanMode::NORMAL });
+			}
+
+			// stomach.
+			if (h == 2) {
+				m_hitboxes.push_back({ HITBOX_PELVIS, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_BODY, HitscanMode::NORMAL });
+			}
+
+			// arms.
+			if (h == 3) {
+				m_hitboxes.push_back({ HITBOX_L_UPPER_ARM, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_UPPER_ARM, HitscanMode::NORMAL });
+			}
+
+			// legs.
+			if (h == 4) {
+				m_hitboxes.push_back({ HITBOX_L_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_L_CALF, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_CALF, HitscanMode::NORMAL });
+			}
+
+			// foot.
+			if (h == 5) {
+				m_hitboxes.push_back({ HITBOX_L_FOOT, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_FOOT, HitscanMode::NORMAL });
+			}
 		}
+	}
+	else if (g_cl.m_weapon_id == SSG08) {
+		std::vector< size_t > hitbox{ history ? g_menu.main.aimbot.hitbox_history_scout.GetActiveIndices() : g_menu.main.aimbot.hitbox_scout.GetActiveIndices() };
+		if (hitbox.empty())
+			return;
 
-		// stomach.
-		if ( h == 2 ) {
-			m_hitboxes.push_back( { HITBOX_PELVIS, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_BODY, HitscanMode::NORMAL } );
+	//	bool ignore_limbs = record->m_velocity.length_2d() > 71.f && g_menu.main.aimbot.ignor_limbs.get();
+
+		for (const auto& h : hitbox) {
+			// head.
+			if (h == 0)
+				m_hitboxes.push_back({ HITBOX_HEAD, HitscanMode::NORMAL });
+
+			// chest.
+			if (h == 1) {
+				m_hitboxes.push_back({ HITBOX_THORAX, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_CHEST, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_UPPER_CHEST, HitscanMode::NORMAL });
+			}
+
+			// stomach.
+			if (h == 2) {
+				m_hitboxes.push_back({ HITBOX_PELVIS, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_BODY, HitscanMode::NORMAL });
+			}
+
+			// arms.
+			if (h == 3 ) {
+				m_hitboxes.push_back({ HITBOX_L_UPPER_ARM, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_UPPER_ARM, HitscanMode::NORMAL });
+			}
+
+			// legs.
+			if (h == 4) {
+				m_hitboxes.push_back({ HITBOX_L_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_L_CALF, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_CALF, HitscanMode::NORMAL });
+			}
+
+			// foot.
+			if (h == 5) {
+				m_hitboxes.push_back({ HITBOX_L_FOOT, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_FOOT, HitscanMode::NORMAL });
+			}
 		}
+	}
+	else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+		std::vector< size_t > hitbox{ history ? g_menu.main.aimbot.hitbox_history_auto.GetActiveIndices() : g_menu.main.aimbot.hitbox_auto.GetActiveIndices() };
+		if (hitbox.empty())
+			return;
 
-		// arms.
-		if ( h == 3 ) {
-			m_hitboxes.push_back( { HITBOX_L_UPPER_ARM, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_R_UPPER_ARM, HitscanMode::NORMAL } );
+	//	bool ignore_limbs = record->m_velocity.length_2d() > 71.f && g_menu.main.aimbot.ignor_limbs.get();
+
+		for (const auto& h : hitbox) {
+			// head.
+			if (h == 0)
+				m_hitboxes.push_back({ HITBOX_HEAD, HitscanMode::NORMAL });
+
+			// chest.
+			if (h == 1) {
+				m_hitboxes.push_back({ HITBOX_THORAX, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_CHEST, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_UPPER_CHEST, HitscanMode::NORMAL });
+			}
+
+			// stomach.
+			if (h == 2) {
+				m_hitboxes.push_back({ HITBOX_PELVIS, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_BODY, HitscanMode::NORMAL });
+			}
+
+			// arms.
+			if (h == 3) {
+				m_hitboxes.push_back({ HITBOX_L_UPPER_ARM, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_UPPER_ARM, HitscanMode::NORMAL });
+			}
+
+			// legs.
+			if (h == 4) {
+				m_hitboxes.push_back({ HITBOX_L_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_L_CALF, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_CALF, HitscanMode::NORMAL });
+			}
+
+			// foot.
+			if (h == 5) {
+				m_hitboxes.push_back({ HITBOX_L_FOOT, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_FOOT, HitscanMode::NORMAL });
+			}
 		}
+	}
+	else if (g_cl.m_weapon_id == AWP) {
+		std::vector< size_t > hitbox{ history ? g_menu.main.aimbot.hitbox_history_awp.GetActiveIndices() : g_menu.main.aimbot.hitbox_awp.GetActiveIndices() };
+		if (hitbox.empty())
+			return;
 
-		// legs.
-		if ( h == 4 ) {
-			m_hitboxes.push_back( { HITBOX_L_THIGH, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_R_THIGH, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_L_CALF, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_R_CALF, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_L_FOOT, HitscanMode::NORMAL } );
-			m_hitboxes.push_back( { HITBOX_R_FOOT, HitscanMode::NORMAL } );
+	//	bool ignore_limbs = record->m_velocity.length_2d() > 71.f && g_menu.main.aimbot.ignor_limbs.get();
+
+		for (const auto& h : hitbox) {
+			// head.
+			if (h == 0)
+				m_hitboxes.push_back({ HITBOX_HEAD, HitscanMode::NORMAL });
+
+			// chest.
+			if (h == 1) {
+				m_hitboxes.push_back({ HITBOX_THORAX, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_CHEST, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_UPPER_CHEST, HitscanMode::NORMAL });
+			}
+
+			// stomach.
+			if (h == 2) {
+				m_hitboxes.push_back({ HITBOX_PELVIS, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_BODY, HitscanMode::NORMAL });
+			}
+
+			// arms.
+			if (h == 3) {
+				m_hitboxes.push_back({ HITBOX_L_UPPER_ARM, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_UPPER_ARM, HitscanMode::NORMAL });
+			}
+
+			// legs.
+			if (h == 4) {
+				m_hitboxes.push_back({ HITBOX_L_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_L_CALF, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_CALF, HitscanMode::NORMAL });
+			}
+
+			// foot.
+			if (h == 5) {
+				m_hitboxes.push_back({ HITBOX_L_FOOT, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_FOOT, HitscanMode::NORMAL });
+			}
+		}
+	}
+	else if (g_cl.m_weapon_id == g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+		std::vector< size_t > hitbox{ history ? g_menu.main.aimbot.hitbox_history_heavy.GetActiveIndices() : g_menu.main.aimbot.hitbox_heavy.GetActiveIndices() };
+		if (hitbox.empty())
+			return;
+
+	//	bool ignore_limbs = record->m_velocity.length_2d() > 71.f && g_menu.main.aimbot.ignor_limbs.get();
+
+		for (const auto& h : hitbox) {
+			// head.
+			if (h == 0)
+				m_hitboxes.push_back({ HITBOX_HEAD, HitscanMode::NORMAL });
+
+			// chest.
+			if (h == 1) {
+				m_hitboxes.push_back({ HITBOX_THORAX, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_CHEST, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_UPPER_CHEST, HitscanMode::NORMAL });
+			}
+
+			// stomach.
+			if (h == 2) {
+				m_hitboxes.push_back({ HITBOX_PELVIS, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_BODY, HitscanMode::NORMAL });
+			}
+
+			// arms.
+			if (h == 3) {
+				m_hitboxes.push_back({ HITBOX_L_UPPER_ARM, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_UPPER_ARM, HitscanMode::NORMAL });
+			}
+
+			// legs.
+			if (h == 4) {
+				m_hitboxes.push_back({ HITBOX_L_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_L_CALF, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_CALF, HitscanMode::NORMAL });
+			}
+
+			// foot.
+			if (h == 5) {
+				m_hitboxes.push_back({ HITBOX_L_FOOT, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_FOOT, HitscanMode::NORMAL });
+			}
+		}
+	}
+	else {
+		std::vector< size_t > hitbox{ history ? g_menu.main.aimbot.hitbox_history_general.GetActiveIndices() : g_menu.main.aimbot.hitbox_general.GetActiveIndices() };
+		if (hitbox.empty())
+			return;
+
+	//	bool ignore_limbs = record->m_velocity.length_2d() > 71.f && g_menu.main.aimbot.ignor_limbs.get();
+
+		for (const auto& h : hitbox) {
+			// head.
+			if (h == 0)
+				m_hitboxes.push_back({ HITBOX_HEAD, HitscanMode::NORMAL });
+
+			// chest.
+			if (h == 1) {
+				m_hitboxes.push_back({ HITBOX_THORAX, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_CHEST, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_UPPER_CHEST, HitscanMode::NORMAL });
+			}
+
+			// stomach.
+			if (h == 2) {
+				m_hitboxes.push_back({ HITBOX_PELVIS, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_BODY, HitscanMode::NORMAL });
+			}
+
+			// arms.
+			if (h == 3) {
+				m_hitboxes.push_back({ HITBOX_L_UPPER_ARM, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_UPPER_ARM, HitscanMode::NORMAL });
+			}
+
+			// legs.
+			if (h == 4) {
+				m_hitboxes.push_back({ HITBOX_L_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_THIGH, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_L_CALF, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_CALF, HitscanMode::NORMAL });
+			}
+
+			// foot.
+			if (h == 5) {
+				m_hitboxes.push_back({ HITBOX_L_FOOT, HitscanMode::NORMAL });
+				m_hitboxes.push_back({ HITBOX_R_FOOT, HitscanMode::NORMAL });
+			}
 		}
 	}
 }
@@ -640,8 +879,25 @@ void Aimbot::find( ) {
 		// set autostop shit.
 		m_stop = !( g_cl.m_buttons & IN_JUMP );
 
-		bool on = g_menu.main.aimbot.hitchance.get( ) && g_menu.main.config.mode.get( ) == 0;
+		bool on = false;
+
+		if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A)
+			on = g_menu.main.aimbot.hitchance_pistols.get() && g_menu.main.config.mode.get() == 0;
+		else if (g_cl.m_weapon_id == SSG08)
+			on = g_menu.main.aimbot.hitchance_scout.get() && g_menu.main.config.mode.get() == 0;
+		else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20)
+			on = g_menu.main.aimbot.hitchance_auto.get() && g_menu.main.config.mode.get() == 0;
+		else if (g_cl.m_weapon_id == AWP)
+			on = g_menu.main.aimbot.hitchance_awp.get() && g_menu.main.config.mode.get() == 0;
+		else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER)
+			on = g_menu.main.aimbot.hitchance_heavy.get() && g_menu.main.config.mode.get() == 0;
+		else
+			on = g_menu.main.aimbot.hitchance_general.get() && g_menu.main.config.mode.get() == 0;
+
+
 		bool hit = on && CheckHitchance( m_target, m_angle );
+
+
 		if (g_menu.main.movement.autostop_always_on.get() || g_input.GetKeyState(g_menu.main.movement.autostop.get()))
 		{
 			m_stop = !(g_cl.m_buttons & IN_JUMP) && on && !hit;
@@ -680,45 +936,69 @@ void Aimbot::find( ) {
 }
 
 bool Aimbot::CheckHitchance( Player *player, const ang_t &angle ) {
+	//constexpr float HITCHANCE_MAX = 100.f;
+	//constexpr int   SEED_MAX = 255;
+
+	float hc = FLT_MAX;
+
+	if (g_cl.m_weapon_id == ZEUS)
+		hc = 90;
+	else if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A)
+		hc = g_menu.main.aimbot.hitchance_amount_pistols.get();
+	else if (g_cl.m_weapon_id == SSG08)
+		hc = g_menu.main.aimbot.hitchance_amount_scout.get();
+	else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20)
+		hc = g_menu.main.aimbot.hitchance_amount_auto.get();
+	else if (g_cl.m_weapon_id == AWP)
+		hc = g_menu.main.aimbot.hitchance_amount_awp.get();
+	else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER)
+		hc = g_menu.main.aimbot.hitchance_amount_heavy.get();
+	else
+		hc = g_menu.main.aimbot.hitchance_amount_general.get();
+
+
 	constexpr float HITCHANCE_MAX = 100.f;
 	constexpr int   SEED_MAX = 255;
 
 	vec3_t     start{ g_cl.m_shoot_pos }, end, fwd, right, up, dir, wep_spread;
 	float      inaccuracy, spread;
 	CGameTrace tr;
-	size_t     total_hits{ }, needed_hits{ ( size_t )std::ceil( ( g_menu.main.aimbot.hitchance_amount.get( ) * SEED_MAX ) / HITCHANCE_MAX ) };
+	int     total_hits{}, needed_hits{ int(float(hc / HITCHANCE_MAX) * SEED_MAX) };
 
 	// get needed directional vectors.
-	math::AngleVectors( angle, &fwd, &right, &up );
+	math::AngleVectors(angle, &fwd, &right, &up);
 
 	// store off inaccuracy / spread ( these functions are quite intensive and we only need them once ).
-	inaccuracy = g_cl.m_weapon->GetInaccuracy( );
-	spread = g_cl.m_weapon->GetSpread( );
+	inaccuracy = g_cl.m_weapon->GetInaccuracy();
+	spread = g_cl.m_weapon->GetSpread();
+
+	if ((g_inputpred.m_perfect_accuracy + 0.0005f) >= inaccuracy)
+		return true;
 
 	// iterate all possible seeds.
-	for ( int i{ }; i <= SEED_MAX; ++i ) {
-		// get spread.
-		wep_spread = g_cl.m_weapon->CalculateSpread( i, inaccuracy, spread );
+	for (int i{}; i <= SEED_MAX; ++i) {
+		// get spread. wwwaaaaaa
+		wep_spread = g_cl.m_weapon->CalculateSpread(m_static_seeds[i], inaccuracy, spread);
 
 		// get spread direction.
-		dir = ( fwd + ( right * wep_spread.x ) + ( up * wep_spread.y ) ).normalized( );
+		dir = (fwd + (right * wep_spread.x) + (up * wep_spread.y)).normalized();
 
 		// get end of trace.
-		end = start + ( dir * g_cl.m_weapon_info->m_range );
+		end = start + (dir * g_cl.m_weapon_info->m_range);
 
 		// setup ray and trace.
-		g_csgo.m_engine_trace->ClipRayToEntity( Ray( start, end ), MASK_SHOT, player, &tr );
+		g_csgo.m_engine_trace->ClipRayToEntity(Ray(start, end), MASK_SHOT_HULL | CONTENTS_HITBOX, player, &tr);
 
 		// check if we hit a valid player / hitgroup on the player and increment total hits.
-		if ( tr.m_entity == player && game::IsValidHitgroup( tr.m_hitgroup ) )
+		if (tr.m_entity == player && game::IsValidHitgroup(tr.m_hitgroup))
 			++total_hits;
 
 		// we made it.
-		if ( total_hits >= needed_hits )
+		if (total_hits >= needed_hits)
 			return true;
 
 		// we cant make it anymore.
-		if ( ( SEED_MAX - i + total_hits ) < needed_hits )
+		if ((SEED_MAX - i + total_hits) < needed_hits)
 			return false;
 	}
 
@@ -727,35 +1007,62 @@ bool Aimbot::CheckHitchance( Player *player, const ang_t &angle ) {
 
 bool AimPlayer::SetupHitboxPoints( LagRecord *record, BoneArray *bones, int index, std::vector< vec3_t > &points ) {
 	// reset points.
-	points.clear( );
+	points.clear();
 
-	const model_t *model = m_player->GetModel( );
-	if ( !model )
+	const model_t* model = m_player->GetModel();
+	if (!model)
 		return false;
 
-	studiohdr_t *hdr = g_csgo.m_model_info->GetStudioModel( model );
-	if ( !hdr )
+	studiohdr_t* hdr = g_csgo.m_model_info->GetStudioModel(model);
+	if (!hdr)
 		return false;
 
-	mstudiohitboxset_t *set = hdr->GetHitboxSet( m_player->m_nHitboxSet( ) );
-	if ( !set )
+	mstudiohitboxset_t* set = hdr->GetHitboxSet(m_player->m_nHitboxSet());
+	if (!set)
 		return false;
 
-	mstudiobbox_t *bbox = set->GetHitbox( index );
-	if ( !bbox )
+	mstudiobbox_t* bbox = set->GetHitbox(index);
+	if (!bbox)
 		return false;
 
 	// get hitbox scales.
-	float scale = g_menu.main.aimbot.scale.get( ) / 100.f;
+	float scale = 0.f;
+
+	if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A)
+		scale = g_menu.main.aimbot.scale_pistols.get() / 100.f;
+	else if (g_cl.m_weapon_id == SSG08)
+		scale = g_menu.main.aimbot.scale_scout.get() / 100.f;
+	else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20)
+		scale = g_menu.main.aimbot.scale_auto.get() / 100.f;
+	else if (g_cl.m_weapon_id == AWP)
+		scale = g_menu.main.aimbot.scale_awp.get() / 100.f;
+	else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER)
+		scale = g_menu.main.aimbot.scale_heavy.get() / 100.f;
+	else
+		scale = g_menu.main.aimbot.scale_general.get() / 100.f;
 
 	// big inair fix.
-	if ( !( record->m_pred_flags ) & FL_ONGROUND )
-		scale = 0.7f;
+	//if (!(record->m_pred_flags) & FL_ONGROUND)
+	//	scale = 0.7f;
 
-	float bscale = g_menu.main.aimbot.body_scale.get( ) / 100.f;
+	float bscale = 0.f;
+	auto final_radius = bbox->m_radius * scale;
+
+	if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A)
+		bscale = g_menu.main.aimbot.body_scale_pistols.get() / 100.f;
+	else if (g_cl.m_weapon_id == SSG08)
+		bscale = g_menu.main.aimbot.body_scale_scout.get() / 100.f;
+	else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20)
+		bscale = g_menu.main.aimbot.body_scale_auto.get() / 100.f;
+	else if (g_cl.m_weapon_id == AWP)
+		bscale = g_menu.main.aimbot.body_scale_awp.get() / 100.f;
+	else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER)
+		bscale = g_menu.main.aimbot.body_scale_heavy.get() / 100.f;
+	else
+		bscale = g_menu.main.aimbot.body_scale_general.get() / 100.f;
 
 	// these indexes represent boxes.
-	if ( bbox->m_radius <= 0.f ) {
+	if (bbox->m_radius <= 0.f) {
 		// references: 
 		//      https://developer.valvesoftware.com/wiki/Rotation_Tutorial
 		//      CBaseAnimating::GetHitboxBonePosition
@@ -763,53 +1070,111 @@ bool AimPlayer::SetupHitboxPoints( LagRecord *record, BoneArray *bones, int inde
 
 		// convert rotation angle to a matrix.
 		matrix3x4_t rot_matrix;
-		g_csgo.AngleMatrix( bbox->m_angle, rot_matrix );
+		g_csgo.AngleMatrix(bbox->m_angle, rot_matrix);
 
 		// apply the rotation to the entity input space (local).
 		matrix3x4_t matrix;
-		math::ConcatTransforms( bones[ bbox->m_bone ], rot_matrix, matrix );
+		math::ConcatTransforms(bones[bbox->m_bone], rot_matrix, matrix);
 
 		// extract origin from matrix.
-		vec3_t origin = matrix.GetOrigin( );
+		vec3_t origin = matrix.GetOrigin();
 
 		// compute raw center point.
-		vec3_t center = ( bbox->m_mins + bbox->m_maxs ) / 2.f;
+		vec3_t center = (bbox->m_mins + bbox->m_maxs) / 2.f;
 
 		// the feet hiboxes have a side, heel and the toe.
-		if ( index == HITBOX_R_FOOT || index == HITBOX_L_FOOT ) {
-			float d1 = ( bbox->m_mins.z - center.z ) * 0.875f;
+		/*if (index == HITBOX_R_FOOT || index == HITBOX_L_FOOT) {
+			float d1 = (bbox->m_mins.z - center.z) * 0.875f;
 
 			// invert.
-			if ( index == HITBOX_L_FOOT )
+			if (index == HITBOX_L_FOOT)
 				d1 *= -1.f;
 
 			// side is more optimal then center.
-			points.push_back( { center.x, center.y, center.z + d1 } );
+			points.push_back({ center.x, center.y, center.z + d1 });
 
-			if ( g_menu.main.aimbot.multipoint.get( 3 ) ) {
-				// get point offset relative to center point
-				// and factor in hitbox scale.
-				float d2 = ( bbox->m_mins.x - center.x ) * scale;
-				float d3 = ( bbox->m_maxs.x - center.x ) * scale;
+			if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A || g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+				if (g_menu.main.aimbot.multipoint_pistols.get(3)) {
+					// get point offset relative to center point
+					// and factor in hitbox scale.
+					float d2 = (bbox->m_mins.x - center.x) * scale;
+					float d3 = (bbox->m_maxs.x - center.x) * scale;
 
-				// heel.
-				points.push_back( { center.x + d2, center.y, center.z } );
+					// heel.
+					points.push_back({ center.x + d2, center.y, center.z });
 
-				// toe.
-				points.push_back( { center.x + d3, center.y, center.z } );
+					// toe.
+					points.push_back({ center.x + d3, center.y, center.z });
+				}
 			}
-		}
+			else if (g_cl.m_weapon_id == SSG08) {
+				if (g_menu.main.aimbot.multipoint_scout.get(3)) {
+					// get point offset relative to center point
+					// and factor in hitbox scale.
+					float d2 = (bbox->m_mins.x - center.x) * scale;
+					float d3 = (bbox->m_maxs.x - center.x) * scale;
+
+					// heel.
+					points.push_back({ center.x + d2, center.y, center.z });
+
+					// toe.
+					points.push_back({ center.x + d3, center.y, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+				if (g_menu.main.aimbot.multipoint_auto.get(3)) {
+					// get point offset relative to center point
+					// and factor in hitbox scale.
+					float d2 = (bbox->m_mins.x - center.x) * scale;
+					float d3 = (bbox->m_maxs.x - center.x) * scale;
+
+					// heel.
+					points.push_back({ center.x + d2, center.y, center.z });
+
+					// toe.
+					points.push_back({ center.x + d3, center.y, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == AWP) {
+				if (g_menu.main.aimbot.multipoint_awp.get(3)) {
+					// get point offset relative to center point
+					// and factor in hitbox scale.
+					float d2 = (bbox->m_mins.x - center.x) * scale;
+					float d3 = (bbox->m_maxs.x - center.x) * scale;
+
+					// heel.
+					points.push_back({ center.x + d2, center.y, center.z });
+
+					// toe.
+					points.push_back({ center.x + d3, center.y, center.z });
+				}
+			}
+			else {
+				if (g_menu.main.aimbot.multipoint_general.get(3)) {
+					// get point offset relative to center point
+					// and factor in hitbox scale.
+					float d2 = (bbox->m_mins.x - center.x) * scale;
+					float d3 = (bbox->m_maxs.x - center.x) * scale;
+
+					// heel.
+					points.push_back({ center.x + d2, center.y, center.z });
+
+					// toe.
+					points.push_back({ center.x + d3, center.y, center.z });
+				}
+			}
+		}*/
 
 		// nothing to do here we are done.
-		if ( points.empty( ) )
+		if (points.empty())
 			return false;
 
 		// rotate our bbox points by their correct angle
 		// and convert our points to world space.
-		for ( auto &p : points ) {
+		for (auto& p : points) {
 			// VectorRotate.
 			// rotate point by angle stored in matrix.
-			p = { p.dot( matrix[ 0 ] ), p.dot( matrix[ 1 ] ), p.dot( matrix[ 2 ] ) };
+			p = { p.dot(matrix[0]), p.dot(matrix[1]), p.dot(matrix[2]) };
 
 			// transform point to world space.
 			p += origin;
@@ -823,141 +1188,521 @@ bool AimPlayer::SetupHitboxPoints( LagRecord *record, BoneArray *bones, int inde
 		float br = bbox->m_radius * bscale;
 
 		// compute raw center point.
-		vec3_t center = ( bbox->m_mins + bbox->m_maxs ) / 2.f;
+		vec3_t center = (bbox->m_mins + bbox->m_maxs) / 2.f;
 
 		// head has 5 points.
-		if ( index == HITBOX_HEAD ) {
+		if (index == HITBOX_HEAD) {
 			// add center.
-			points.push_back( center );
+			points.push_back(center);
 
-			if ( g_menu.main.aimbot.multipoint.get( 0 ) ) {
-				// rotation matrix 45 degrees.
-				// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
-				// std::cos( deg_to_rad( 45.f ) )
-				constexpr float rotation = 0.70710678f;
+			if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A) {
+				if (g_menu.main.aimbot.multipoint_pistols.get(0)) {
+					// rotation matrix 45 degrees.
+					// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
+					// std::cos( deg_to_rad( 45.f ) )
+					constexpr float rotation = 0.70710678f;
 
-				// top/back 45 deg.
-				// this is the best spot to shoot at.
-				points.push_back( { bbox->m_maxs.x + ( rotation * r ), bbox->m_maxs.y + ( -rotation * r ), bbox->m_maxs.z } );
+					// top/back 45 deg.
+					// this is the best spot to shoot at.
+					points.push_back({ bbox->m_maxs.x + (rotation * r), bbox->m_maxs.y + (-rotation * r), bbox->m_maxs.z });
 
-				// right.
-				points.push_back( { bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + r } );
+					// right.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + r });
 
-				// left.
-				points.push_back( { bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - r } );
+					// left.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - r });
 
-				// back.
-				points.push_back( { bbox->m_maxs.x, bbox->m_maxs.y - r, bbox->m_maxs.z } );
+					// back.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y - r, bbox->m_maxs.z });
 
-				// get animstate ptr.
-				CCSGOPlayerAnimState *state = record->m_player->m_PlayerAnimState( );
+					// get animstate ptr.
+					CCSGOPlayerAnimState* state = record->m_player->m_PlayerAnimState();
 
-				// add this point only under really specific circumstances.
-				// if we are standing still and have the lowest possible pitch pose.
-				if ( state && record->m_anim_velocity.length( ) <= 0.1f && record->m_eye_angles.x <= state->m_min_pitch ) {
+					// add this point only under really specific circumstances.  THIS IS SILLY LOL -kiera.
+					// if we are standing still and have the lowest possible pitch pose.
+					if (state && record->m_anim_velocity.length() <= 0.1f && record->m_eye_angles.x <= state->m_min_pitch) {
 
-					// bottom point.
-					points.push_back( { bbox->m_maxs.x - r, bbox->m_maxs.y, bbox->m_maxs.z } );
+						// bottom point.
+						points.push_back({ bbox->m_maxs.x - r, bbox->m_maxs.y, bbox->m_maxs.z });
+					}
+				}
+			}
+			else if (g_cl.m_weapon_id == SSG08) {
+				if (g_menu.main.aimbot.multipoint_scout.get(0)) {
+					// rotation matrix 45 degrees.
+					// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
+					// std::cos( deg_to_rad( 45.f ) )
+					constexpr float rotation = 0.70710678f;
+
+					// top/back 45 deg.
+					// this is the best spot to shoot at.
+					points.push_back({ bbox->m_maxs.x + (rotation * r), bbox->m_maxs.y + (-rotation * r), bbox->m_maxs.z });
+
+					// right.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + r });
+
+					// left.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - r });
+
+					// back.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y - r, bbox->m_maxs.z });
+
+					// get animstate ptr.
+					CCSGOPlayerAnimState* state = record->m_player->m_PlayerAnimState();
+
+					// add this point only under really specific circumstances.  THIS IS SILLY LOL -kiera.
+					// if we are standing still and have the lowest possible pitch pose.
+					if (state && record->m_anim_velocity.length() <= 0.1f && record->m_eye_angles.x <= state->m_min_pitch) {
+
+						// bottom point.
+						points.push_back({ bbox->m_maxs.x - r, bbox->m_maxs.y, bbox->m_maxs.z });
+					}
+				}
+			}
+			else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+				if (g_menu.main.aimbot.multipoint_auto.get(0)) {
+					// rotation matrix 45 degrees.
+					// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
+					// std::cos( deg_to_rad( 45.f ) )
+					constexpr float rotation = 0.70710678f;
+
+					// top/back 45 deg.
+					// this is the best spot to shoot at.
+					points.push_back({ bbox->m_maxs.x + (rotation * r), bbox->m_maxs.y + (-rotation * r), bbox->m_maxs.z });
+
+					// right.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + r });
+
+					// left.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - r });
+
+					// back.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y - r, bbox->m_maxs.z });
+
+					// get animstate ptr.
+					CCSGOPlayerAnimState* state = record->m_player->m_PlayerAnimState();
+
+					// add this point only under really specific circumstances.  THIS IS SILLY LOL -kiera.
+					// if we are standing still and have the lowest possible pitch pose.
+					if (state && record->m_anim_velocity.length() <= 0.1f && record->m_eye_angles.x <= state->m_min_pitch) {
+
+						// bottom point.
+						points.push_back({ bbox->m_maxs.x - r, bbox->m_maxs.y, bbox->m_maxs.z });
+					}
+				}
+			}
+			else if (g_cl.m_weapon_id == AWP) {
+				if (g_menu.main.aimbot.multipoint_awp.get(0)) {
+					// rotation matrix 45 degrees.
+					// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
+					// std::cos( deg_to_rad( 45.f ) )
+					constexpr float rotation = 0.70710678f;
+
+					// top/back 45 deg.
+					// this is the best spot to shoot at.
+					points.push_back({ bbox->m_maxs.x + (rotation * r), bbox->m_maxs.y + (-rotation * r), bbox->m_maxs.z });
+
+					// right.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + r });
+
+					// left.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - r });
+
+					// back.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y - r, bbox->m_maxs.z });
+
+					// get animstate ptr.
+					CCSGOPlayerAnimState* state = record->m_player->m_PlayerAnimState();
+
+					// add this point only under really specific circumstances.  THIS IS SILLY LOL -kiera.
+					// if we are standing still and have the lowest possible pitch pose.
+					//if (state && record->m_anim_velocity.length() <= 0.1f && record->m_eye_angles.x <= state->m_min_pitch) {
+
+						// bottom point.
+					points.push_back({ bbox->m_maxs.x - r, bbox->m_maxs.y, bbox->m_maxs.z });
+					//}
+				}
+			}
+			else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+				if (g_menu.main.aimbot.multipoint_heavy.get(0)) {
+					// rotation matrix 45 degrees.
+					// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
+					// std::cos( deg_to_rad( 45.f ) )
+					constexpr float rotation = 0.70710678f;
+
+					// top/back 45 deg.
+					// this is the best spot to shoot at.
+					points.push_back({ bbox->m_maxs.x + (rotation * r), bbox->m_maxs.y + (-rotation * r), bbox->m_maxs.z });
+
+					// right.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + r });
+
+					// left.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - r });
+
+					// back.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y - r, bbox->m_maxs.z });
+
+					// get animstate ptr.
+					CCSGOPlayerAnimState* state = record->m_player->m_PlayerAnimState();
+
+					// add this point only under really specific circumstances.  THIS IS SILLY LOL -kiera.
+					// if we are standing still and have the lowest possible pitch pose.
+					if (state && record->m_anim_velocity.length() <= 0.1f && record->m_eye_angles.x <= state->m_min_pitch) {
+
+						// bottom point.
+						points.push_back({ bbox->m_maxs.x - r, bbox->m_maxs.y, bbox->m_maxs.z });
+					}
+				}
+			}
+			else {
+				if (g_menu.main.aimbot.multipoint_general.get(0)) {
+					// rotation matrix 45 degrees.
+					// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
+					// std::cos( deg_to_rad( 45.f ) )
+					constexpr float rotation = 0.70710678f;
+
+					// top/back 45 deg.
+					// this is the best spot to shoot at.
+					points.push_back({ bbox->m_maxs.x + (rotation * r), bbox->m_maxs.y + (-rotation * r), bbox->m_maxs.z });
+
+					// right.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + r });
+
+					// left.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - r });
+
+					// back.
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y - r, bbox->m_maxs.z });
+
+					// get animstate ptr.
+					CCSGOPlayerAnimState* state = record->m_player->m_PlayerAnimState();
+
+					// add this point only under really specific circumstances.  THIS IS SILLY LOL -kiera.
+					// if we are standing still and have the lowest possible pitch pose.
+					if (state && record->m_anim_velocity.length() <= 0.1f && record->m_eye_angles.x <= state->m_min_pitch) {
+
+						// bottom point.
+						points.push_back({ bbox->m_maxs.x - r, bbox->m_maxs.y, bbox->m_maxs.z });
+					}
 				}
 			}
 		}
 
 		// body has 5 points.
-		else if ( index == HITBOX_BODY ) {
+		else if (index == HITBOX_BODY) {
 			// center.
-			points.push_back( center );
+			points.push_back(center);
 
-			// back.
-			if ( g_menu.main.aimbot.multipoint.get( 2 ) )
-				points.push_back( { center.x, bbox->m_maxs.y - br, center.z } );
+			if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A) {
+				// back.
+				if (g_menu.main.aimbot.multipoint_pistols.get(2))
+					points.push_back({ center.x, bbox->m_maxs.y - br, center.z });
+			}
+			else if (g_cl.m_weapon_id == SSG08) {
+				// back.
+				if (g_menu.main.aimbot.multipoint_scout.get(2))
+					points.push_back({ center.x, bbox->m_maxs.y - br, center.z });
+			}
+			else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+				// back.
+				if (g_menu.main.aimbot.multipoint_auto.get(2))
+					points.push_back({ center.x, bbox->m_maxs.y - br, center.z });
+			}
+			else if (g_cl.m_weapon_id == AWP) {
+				// back.
+				if (g_menu.main.aimbot.multipoint_awp.get(2))
+					points.push_back({ center.x, bbox->m_maxs.y - br, center.z });
+			}
+			else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+				// back.
+				if (g_menu.main.aimbot.multipoint_heavy.get(2))
+					points.push_back({ center.x, bbox->m_maxs.y - br, center.z });
+			}
+			else {
+				// back.
+				if (g_menu.main.aimbot.multipoint_general.get(2))
+					points.push_back({ center.x, bbox->m_maxs.y - br, center.z });
+			}
 		}
 
-		else if ( index == HITBOX_PELVIS || index == HITBOX_UPPER_CHEST ) {
-			// back.
-			points.push_back( { center.x, bbox->m_maxs.y - r, center.z } );
+		else if (index == HITBOX_PELVIS || index == HITBOX_UPPER_CHEST) {
+
+			points.push_back(center);
+
+			if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_pistols.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == SSG08) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_scout.get(1))
+				{
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_auto.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == AWP) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_awp.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+
+				}
+
+			}
+			else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_heavy.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_general.get(1)) {}
+				points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+				points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+				points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+			}
+
 		}
 
 		// other stomach/chest hitboxes have 2 points.
-		else if ( index == HITBOX_THORAX || index == HITBOX_CHEST ) {
+		else if (index == HITBOX_THORAX || index == HITBOX_CHEST || index == HITBOX_UPPER_CHEST) {
 			// add center.
-			points.push_back( center );
+			points.push_back(center);
 
-			// add extra point on back.
-			if ( g_menu.main.aimbot.multipoint.get( 1 ) )
-				points.push_back( { center.x, bbox->m_maxs.y - r, center.z } );
+			if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_pistols.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == SSG08) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_scout.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_auto.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == AWP) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_awp.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_heavy.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
+			else {
+				// add extra point on back.
+				if (g_menu.main.aimbot.multipoint_general.get(1)) {
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z + final_radius });
+					points.push_back({ bbox->m_maxs.x, bbox->m_maxs.y, bbox->m_maxs.z - final_radius });
+
+					points.push_back({ center.x, bbox->m_maxs.y - final_radius, center.z });
+				}
+			}
 		}
 
-		else if ( index == HITBOX_R_CALF || index == HITBOX_L_CALF ) {
+		else if (index == HITBOX_R_CALF || index == HITBOX_L_CALF) {
 			// add center.
-			points.push_back( center );
+			points.push_back(center);
 
-			// half bottom.
-			if ( g_menu.main.aimbot.multipoint.get( 3 ) )
-				points.push_back( { bbox->m_maxs.x - ( bbox->m_radius / 2.f ), bbox->m_maxs.y, bbox->m_maxs.z } );
+			if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A) {
+				// half bottom.
+				if (g_menu.main.aimbot.multipoint_pistols.get(3))
+					points.push_back({ bbox->m_maxs.x - (bbox->m_radius / 2.f), bbox->m_maxs.y, bbox->m_maxs.z });
+			}
+			else if (g_cl.m_weapon_id == SSG08) {
+				// half bottom.
+				if (g_menu.main.aimbot.multipoint_scout.get(3))
+					points.push_back({ bbox->m_maxs.x - (bbox->m_radius / 2.f), bbox->m_maxs.y, bbox->m_maxs.z });
+			}
+			else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+				// half bottom.
+				if (g_menu.main.aimbot.multipoint_auto.get(3))
+					points.push_back({ bbox->m_maxs.x - (bbox->m_radius / 2.f), bbox->m_maxs.y, bbox->m_maxs.z });
+			}
+			else if (g_cl.m_weapon_id == AWP) {
+				// half bottom.
+				if (g_menu.main.aimbot.multipoint_awp.get(3))
+					points.push_back({ bbox->m_maxs.x - (bbox->m_radius / 2.f), bbox->m_maxs.y, bbox->m_maxs.z });
+			}
+			else if (g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+				// half bottom.
+				if (g_menu.main.aimbot.multipoint_heavy.get(3))
+					points.push_back({ bbox->m_maxs.x - (bbox->m_radius / 2.f), bbox->m_maxs.y, bbox->m_maxs.z });
+			}
+			else {
+				// half bottom.
+				if (g_menu.main.aimbot.multipoint_general.get(3))
+					points.push_back({ bbox->m_maxs.x - (bbox->m_radius / 2.f), bbox->m_maxs.y, bbox->m_maxs.z });
+			}
 		}
 
-		else if ( index == HITBOX_R_THIGH || index == HITBOX_L_THIGH ) {
+		else if (index == HITBOX_R_THIGH || index == HITBOX_L_THIGH) {
 			// add center.
-			points.push_back( center );
+			points.push_back(center);
 		}
 
 		// arms get only one point.
-		else if ( index == HITBOX_R_UPPER_ARM || index == HITBOX_L_UPPER_ARM ) {
+		else if (index == HITBOX_R_UPPER_ARM || index == HITBOX_L_UPPER_ARM) {
 			// elbow.
-			points.push_back( { bbox->m_maxs.x + bbox->m_radius, center.y, center.z } );
+			points.push_back({ bbox->m_maxs.x + bbox->m_radius, center.y, center.z });
 		}
 
 		// nothing left to do here.
-		if ( points.empty( ) )
+		if (points.empty())
 			return false;
 
 		// transform capsule points.
-		for ( auto &p : points )
-			math::VectorTransform( p, bones[ bbox->m_bone ], p );
+		for (auto& p : points)
+			math::VectorTransform(p, bones[bbox->m_bone], p);
 	}
 
 	return true;
 }
 
-bool AimPlayer::GetBestAimPosition( vec3_t &aim, float &damage, LagRecord *record ) {
+bool AimPlayer::GetBestAimPosition(vec3_t& aim, float& damage, LagRecord* record) {
 	bool                  done, pen;
 	float                 dmg, pendmg;
 	HitscanData_t         scan;
 	std::vector< vec3_t > points;
 
 	// get player hp.
-	int hp = std::min( 100, m_player->m_iHealth( ) );
-
-	if ( g_cl.m_weapon_id == ZEUS ) {
+	int hp = std::min(100, m_player->m_iHealth());
+	int half_hp = hp / 2;
+	if (g_cl.m_weapon_id == ZEUS) {
 		dmg = pendmg = hp;
 		pen = true;
 	}
 
 	else {
-		dmg = g_menu.main.aimbot.minimal_damage.get( );
-		if ( g_menu.main.aimbot.minimal_damage_hp.get( ) )
-			dmg = std::ceil( ( dmg / 100.f ) * hp );
 
-		pendmg = g_menu.main.aimbot.penetrate_minimal_damage.get( );
-		if ( g_menu.main.aimbot.penetrate_minimal_damage_hp.get( ) )
-			pendmg = std::ceil( ( pendmg / 100.f ) * hp );
+		if (g_cl.m_weapon_id == GLOCK || g_cl.m_weapon_id == P2000 || g_cl.m_weapon_id == USPS || g_cl.m_weapon_id == ELITE || g_cl.m_weapon_id == P250 || g_cl.m_weapon_id == TEC9 || g_cl.m_weapon_id == CZ75A) {
+			dmg = g_menu.main.aimbot.minimal_damage_pistols.get();
+			if (g_menu.main.aimbot.minimal_damage_pistols.get() > 100)
+				dmg = std::ceil((hp + dmg) - 100);
 
-		pen = g_menu.main.aimbot.penetrate.get( );
-	}
+				pendmg = g_menu.main.aimbot.minimal_damage_pistols.get();
+				if (g_menu.main.aimbot.minimal_damage_pistols.get() > 100)
+					pendmg = std::ceil((hp + pendmg) - 100);
+
+				pen = g_menu.main.aimbot.penetrate_pistols.get();
+			}
+		else if (g_cl.m_weapon_id == SSG08) {
+			dmg = g_menu.main.aimbot.minimal_damage_scout.get();
+			if (g_menu.main.aimbot.minimal_damage_scout.get() > 100)
+				dmg = std::ceil((hp + dmg) - 100);
+
+				pendmg = g_menu.main.aimbot.minimal_damage_scout.get();
+				if (g_menu.main.aimbot.minimal_damage_scout.get() > 100)
+					pendmg = std::ceil((hp + pendmg) - 100);
+
+				pen = g_menu.main.aimbot.penetrate_scout.get();
+			}
+			else if (g_cl.m_weapon_id == G3SG1 || g_cl.m_weapon_id == SCAR20) {
+				dmg = g_menu.main.aimbot.minimal_damage_auto.get();
+				if (g_menu.main.aimbot.minimal_damage_auto.get() > 100)
+					dmg = std::ceil((hp + dmg) - 100);
+
+				pendmg = g_menu.main.aimbot.minimal_damage_auto.get();
+				if (g_menu.main.aimbot.minimal_damage_auto.get() > 100)
+					pendmg = std::ceil((hp + pendmg) - 100);
+
+				pen = g_menu.main.aimbot.penetrate_auto.get();
+			}
+			else if (g_cl.m_weapon_id == AWP) {
+				dmg = g_menu.main.aimbot.minimal_damage_awp.get();
+				if (g_menu.main.aimbot.minimal_damage_awp.get() > 100)
+					dmg = std::ceil((hp + dmg) - 100);
+
+				pendmg = g_menu.main.aimbot.minimal_damage_awp.get();
+				if (g_menu.main.aimbot.minimal_damage_awp.get() > 100)
+					pendmg = std::ceil((hp + pendmg) - 100);
+
+				pen = g_menu.main.aimbot.penetrate_awp.get();
+			}
+			else if (g_cl.m_weapon_id == g_cl.m_weapon_id == DEAGLE || g_cl.m_weapon_id == REVOLVER) {
+				dmg = g_menu.main.aimbot.minimal_damage_heavy.get();
+				if (g_menu.main.aimbot.minimal_damage_heavy.get() > 100)
+					dmg = std::ceil((hp + dmg) - 100);
+
+				pendmg = g_menu.main.aimbot.minimal_damage_heavy.get();
+				if (half_hp < pendmg)
+					if (g_menu.main.aimbot.minimal_damage_heavy.get() > 100)
+						pendmg = std::ceil((hp + pendmg) - 100);
+
+				pen = g_menu.main.aimbot.penetrate_heavy.get();
+			}
+			else {
+				dmg = g_menu.main.aimbot.minimal_damage_general.get();
+				if (g_menu.main.aimbot.minimal_damage_general.get() > 100)
+					dmg = std::ceil((hp + dmg) - 100);
+
+				pendmg = g_menu.main.aimbot.minimal_damage_general.get();
+				if (g_menu.main.aimbot.minimal_damage_general.get() > 100)
+					pendmg = std::ceil((hp + pendmg) - 100);
+
+				pen = g_menu.main.aimbot.penetrate_general.get();
+			}
+		}
 
 	// write all data of this record l0l.
 	record->cache( );
 
 	// iterate hitboxes.
-	for ( const auto &it : m_hitboxes ) {
+	for (const auto& it : m_hitboxes) {
 		done = false;
 
 		// setup points on hitbox.
-		if ( !SetupHitboxPoints( record, record->m_bones, it.m_index, points ) )
+		if (!SetupHitboxPoints(record, record->m_bones, it.m_index, points))
 			continue;
 
 		// iterate points on hitbox.
-		for ( const auto &point : points ) {
+		for (const auto& point : points) {
 			penetration::PenetrationInput_t in;
 
 			in.m_damage = dmg;
@@ -967,59 +1712,55 @@ bool AimPlayer::GetBestAimPosition( vec3_t &aim, float &damage, LagRecord *recor
 			in.m_from = g_cl.m_local;
 			in.m_pos = point;
 
-			// ignore mindmg.
-			if ( it.m_mode == HitscanMode::LETHAL || it.m_mode == HitscanMode::LETHAL2 )
-				in.m_damage = in.m_damage_pen = 1.f;
-
 			penetration::PenetrationOutput_t out;
 
 			// we can hit p!
-			if ( penetration::run( &in, &out ) ) {
+			if (penetration::run(&in, &out)) {
 
 				// nope we did not hit head..
-				if ( it.m_index == HITBOX_HEAD && out.m_hitgroup != HITGROUP_HEAD )
+				if (it.m_index == HITBOX_HEAD && out.m_hitgroup != HITGROUP_HEAD)
 					continue;
 
 				// prefered hitbox, just stop now.
-				if ( it.m_mode == HitscanMode::PREFER )
+				if (it.m_mode == HitscanMode::PREFER)
 					done = true;
 
 				// this hitbox requires lethality to get selected, if that is the case.
 				// we are done, stop now.
-				else if ( it.m_mode == HitscanMode::LETHAL && out.m_damage >= m_player->m_iHealth( ) )
+				else if (it.m_mode == HitscanMode::LETHAL && out.m_damage >= m_player->m_iHealth())
 					done = true;
 
 				// 2 shots will be sufficient to kill.
-				else if ( it.m_mode == HitscanMode::LETHAL2 && ( out.m_damage * 2.f ) >= m_player->m_iHealth( ) )
+				else if (it.m_mode == HitscanMode::LETHAL2 && (out.m_damage * 2.f) >= m_player->m_iHealth())
 					done = true;
 
 				// this hitbox has normal selection, it needs to have more damage.
-				else if ( it.m_mode == HitscanMode::NORMAL ) {
+				else if (it.m_mode == HitscanMode::NORMAL) {
 					// we did more damage.
-					if ( out.m_damage > scan.m_damage ) {
+					if (out.m_damage > scan.m_damage) {
 						// save new best data.
 						scan.m_damage = out.m_damage;
 						scan.m_pos = point;
 
 						// if the first point is lethal
 						// screw the other ones.
-						if ( point == points.front( ) && out.m_damage >= m_player->m_iHealth( ) )
+						if (point == points.front() && out.m_damage >= m_player->m_iHealth())
 							break;
 					}
 				}
-
 				// we found a preferred / lethal hitbox.
-				if ( done ) {
+				if (done) {
 					// save new best data.
 					scan.m_damage = out.m_damage;
 					scan.m_pos = point;
+
 					break;
 				}
 			}
 		}
 
 		// ghetto break out of outer loop.
-		if ( done )
+		if (done)
 			break;
 	}
 

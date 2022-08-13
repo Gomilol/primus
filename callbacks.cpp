@@ -71,6 +71,127 @@ void callbacks::ConfigLoad6( ) {
 	g_notify.add( tfm::format( XOR( "loaded config 6\n" ) ) );
 }
 
+bool callbacks::IsWeaponGeneral() {
+	return g_menu.main.aimbot.weapon_select.get() == 0;
+}
+
+bool callbacks::IsWeaponAuto() {
+	return g_menu.main.aimbot.weapon_select.get() == 1;
+}
+
+bool callbacks::IsWeaponAWP() {
+	return g_menu.main.aimbot.weapon_select.get() == 2;
+}
+
+bool callbacks::IsWeaponScout() {
+	return g_menu.main.aimbot.weapon_select.get() == 3;
+}
+
+bool callbacks::IsWeaponPistol() {
+	return g_menu.main.aimbot.weapon_select.get() == 4;
+}
+
+bool callbacks::IsWeaponHeavy() {
+	return g_menu.main.aimbot.weapon_select.get() == 5;
+}
+
+
+bool callbacks::IsHitchanceOnGeneral() {
+	return g_menu.main.aimbot.hitchance_general.get();
+}
+
+bool callbacks::IsHitchanceOnAuto() {
+	return g_menu.main.aimbot.hitchance_auto.get();
+}
+
+bool callbacks::IsHitchanceOnAWP() {
+	return g_menu.main.aimbot.hitchance_awp.get();
+}
+
+bool callbacks::IsHitchanceOnScout() {
+	return g_menu.main.aimbot.hitchance_scout.get();
+}
+
+bool callbacks::IsHitchanceOnPistols() {
+	return g_menu.main.aimbot.hitchance_pistols.get();
+}
+
+bool callbacks::IsHitchanceOnHeavy() {
+	return g_menu.main.aimbot.hitchance_heavy.get();
+}
+
+bool callbacks::IsPenetrationOnGeneral() {
+	return g_menu.main.aimbot.penetrate_general.get();
+}
+
+bool callbacks::IsPenetrationOnAuto() {
+	return g_menu.main.aimbot.penetrate_auto.get();
+}
+
+bool callbacks::IsPenetrationOnAWP() {
+	return g_menu.main.aimbot.penetrate_awp.get();
+}
+
+bool callbacks::IsPenetrationOnScout() {
+	return g_menu.main.aimbot.penetrate_scout.get();
+}
+
+bool callbacks::IsPenetrationOnPistols() {
+	return g_menu.main.aimbot.penetrate_pistols.get();
+}
+
+bool callbacks::IsPenetrationOnHeavy() {
+	return g_menu.main.aimbot.penetrate_heavy.get();
+}
+
+bool callbacks::IsMultipointOnGeneral() {
+	return !g_menu.main.aimbot.multipoint_general.GetActiveIndices().empty();
+}
+
+bool callbacks::IsMultipointOnAuto() {
+	return !g_menu.main.aimbot.multipoint_auto.GetActiveIndices().empty();
+}
+
+bool callbacks::IsMultipointOnAWP() {
+	return !g_menu.main.aimbot.multipoint_awp.GetActiveIndices().empty();
+}
+
+bool callbacks::IsMultipointOnScout() {
+	return !g_menu.main.aimbot.multipoint_scout.GetActiveIndices().empty();
+}
+
+bool callbacks::IsMultipointOnPistols() {
+	return !g_menu.main.aimbot.multipoint_pistols.GetActiveIndices().empty();
+}
+
+bool callbacks::IsMultipointOnHeavy() {
+	return !g_menu.main.aimbot.multipoint_heavy.GetActiveIndices().empty();
+}
+
+bool callbacks::IsMultipointBodyOnGeneral() {
+	return g_menu.main.aimbot.multipoint_general.get(2);
+}
+
+bool callbacks::IsMultipointBodyOnAuto() {
+	return g_menu.main.aimbot.multipoint_auto.get(2);
+}
+
+bool callbacks::IsMultipointBodyOnAWP() {
+	return g_menu.main.aimbot.multipoint_awp.get(2);
+}
+
+bool callbacks::IsMultipointBodyOnScout() {
+	return g_menu.main.aimbot.multipoint_scout.get(2);
+}
+
+bool callbacks::IsMultipointBodyOnPistols() {
+	return g_menu.main.aimbot.multipoint_pistols.get(2);
+}
+
+bool callbacks::IsMultipointBodyOnHeavy() {
+	return g_menu.main.aimbot.multipoint_heavy.get(2);
+}
+
 void callbacks::ConfigLoad( ) {
 	std::string config = g_menu.main.config.config.GetActiveItem( );
 	std::string file   = tfm::format( XOR( "%s.sup" ), config.data( ) );
@@ -95,21 +216,7 @@ bool callbacks::IsFovOn( ) {
 	return g_menu.main.aimbot.fov.get( );
 }
 
-bool callbacks::IsHitchanceOn( ) {
-	return g_menu.main.aimbot.hitchance.get( );
-}
 
-bool callbacks::IsPenetrationOn( ) {
-	return g_menu.main.aimbot.penetrate.get( );
-}
-
-bool callbacks::IsMultipointOn( ) {
-	return !g_menu.main.aimbot.multipoint.GetActiveIndices( ).empty( );
-}
-
-bool callbacks::IsMultipointBodyOn( ) {
-	return g_menu.main.aimbot.multipoint.get( 2 );
-}
 
 bool callbacks::IsAntiAimModeStand( ) {
 	return g_menu.main.antiaim.mode.get( ) == 0;

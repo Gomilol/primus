@@ -8,16 +8,75 @@ public:
 	Dropdown	  selection;
 	Checkbox	  fov;
 	Slider		  fov_amount;
-	MultiDropdown hitbox;
-	MultiDropdown hitbox_history;
-	MultiDropdown multipoint;
-	Slider		  scale;
-	Slider		  body_scale;
-	Slider		  minimal_damage;
-	Checkbox	  minimal_damage_hp;
-	Checkbox	  penetrate;
-	Slider		  penetrate_minimal_damage;
-	Checkbox	  penetrate_minimal_damage_hp;
+	Dropdown	  weapon_select;
+
+	MultiDropdown hitbox_general;
+	MultiDropdown hitbox_history_general;
+	MultiDropdown multipoint_general;
+	Slider		  scale_general;
+	Slider		  body_scale_general;
+	Slider		  minimal_damage_general;
+	Checkbox	  minimal_damage_hp_general;
+	Checkbox	  penetrate_general;
+	Slider		  penetrate_minimal_damage_general;
+	Checkbox	  penetrate_minimal_damage_hp_general;
+
+	MultiDropdown hitbox_auto;
+	MultiDropdown hitbox_history_auto;
+	MultiDropdown multipoint_auto;
+	Slider		  scale_auto;
+	Slider		  body_scale_auto;
+	Slider		  minimal_damage_auto;
+	Slider		  dt_minimal_damage_auto;
+	Checkbox	  minimal_damage_hp_auto;
+	Checkbox	  penetrate_auto;
+	Slider		  penetrate_minimal_damage_auto;
+	Checkbox	  penetrate_minimal_damage_hp_auto;
+
+	MultiDropdown hitbox_awp;
+	MultiDropdown hitbox_history_awp;
+	MultiDropdown multipoint_awp;
+	Slider		  scale_awp;
+	Slider		  body_scale_awp;
+	Slider		  minimal_damage_awp;
+	Checkbox	  minimal_damage_hp_awp;
+	Checkbox	  penetrate_awp;
+	Slider		  penetrate_minimal_damage_awp;
+	Checkbox	  penetrate_minimal_damage_hp_awp;
+
+	MultiDropdown hitbox_heavy;
+	MultiDropdown hitbox_history_heavy;
+	MultiDropdown multipoint_heavy;
+	Slider		  scale_heavy;
+	Slider		  body_scale_heavy;
+	Slider		  minimal_damage_heavy;
+	Checkbox	  minimal_damage_hp_heavy;
+	Checkbox	  penetrate_heavy;
+	Slider		  penetrate_minimal_damage_heavy;
+	Checkbox	  penetrate_minimal_damage_hp_heavy;
+
+	MultiDropdown hitbox_scout;
+	MultiDropdown hitbox_history_scout;
+	MultiDropdown multipoint_scout;
+	Slider		  scale_scout;
+	Slider		  body_scale_scout;
+	Slider		  minimal_damage_scout;
+	Slider		  dt_minimal_damage_scout;
+	Checkbox	  minimal_damage_hp_scout;
+	Checkbox	  penetrate_scout;
+	Slider		  penetrate_minimal_damage_scout;
+	Checkbox	  penetrate_minimal_damage_hp_scout;
+
+	MultiDropdown hitbox_pistols;
+	MultiDropdown hitbox_history_pistols;
+	MultiDropdown multipoint_pistols;
+	Slider		  scale_pistols;
+	Slider		  body_scale_pistols;
+	Slider		  minimal_damage_pistols;
+	Checkbox	  minimal_damage_hp_pistols;
+	Checkbox	  penetrate_pistols;
+	Slider		  penetrate_minimal_damage_pistols;
+	Checkbox	  penetrate_minimal_damage_hp_pistols;
 	Checkbox      knifebot;
 	Checkbox	  zeusbot;
 
@@ -25,8 +84,23 @@ public:
 	Dropdown      zoom;
 	Checkbox      nospread;
 	Checkbox      norecoil;
-	Checkbox      hitchance;
-	Slider	      hitchance_amount;
+	Checkbox      hitchance_general;
+	Slider	      hitchance_amount_general;
+
+	Checkbox      hitchance_auto;
+	Slider	      hitchance_amount_auto;
+
+	Checkbox      hitchance_awp;
+	Slider	      hitchance_amount_awp;
+
+	Checkbox      hitchance_heavy;
+	Slider	      hitchance_amount_heavy;
+
+	Checkbox      hitchance_scout;
+	Slider	      hitchance_amount_scout;
+
+	Checkbox      hitchance_pistols;
+	Slider	      hitchance_amount_pistols;
 	Checkbox      lagfix;
 	Checkbox	  correct;
 	MultiDropdown baim1;
@@ -55,39 +129,362 @@ public:
 		fov_amount.AddShowCallback( callbacks::IsFovOn );
 		RegisterElement( &fov_amount );
 
-		hitbox.setup( XOR( "hitbox" ), XOR( "hitbox" ), { XOR( "head" ), XOR( "chest" ), XOR( "body" ), XOR( "arms" ), XOR( "legs" ) } );
-		RegisterElement( &hitbox );
+		weapon_select.setup(XOR("weapon config"), XOR("weapon_configs"), { XOR("general"), XOR("auto"), XOR("awp"), XOR("scout"), XOR("pistols"), XOR("heavy pistols") });
+		RegisterElement(&weapon_select);
 
-		hitbox_history.setup( XOR( "hitbox history" ), XOR( "hitbox_history" ), { XOR( "head" ), XOR( "chest" ), XOR( "body" ), XOR( "arms" ), XOR( "legs" ) } );
-		RegisterElement( &hitbox_history );
+		/* General */
 
-		multipoint.setup( XOR( "multi-point" ), XOR( "multipoint" ), { XOR( "head" ), XOR( "chest" ), XOR( "body" ), XOR( "legs" ) } );
-		RegisterElement( &multipoint );
+//hitchance_general.setup(XOR("minimum hitchance"), XOR("hitchance_general"));
+//hitchance_general.AddShowCallback(callbacks::IsConfigMM); //fixed pos in menu being super low compared to other hitchance sliders
+//hitchance_general.AddShowCallback(callbacks::IsWeaponGeneral);
+//RegisterElement(&hitchance_general);
 
-		scale.setup( "", XOR( "hitbox_scale" ), 1.f, 100.f, false, 0, 90.f, 1.f, XOR( L"%" ) );
-		scale.AddShowCallback( callbacks::IsMultipointOn );
-		RegisterElement( &scale );
+		hitchance_amount_general.setup("", XOR("hitchance_amount_general"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
+		hitchance_amount_general.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_amount_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		//hitchance_amount_general.AddShowCallback(callbacks::IsHitchanceOnGeneral);
+		RegisterElement(&hitchance_amount_general);
 
-		body_scale.setup( XOR( "body hitbox scale" ), XOR( "body_hitbox_scale" ), 1.f, 100.f, true, 0, 50.f, 1.f, XOR( L"%" ) );
-		body_scale.AddShowCallback( callbacks::IsMultipointBodyOn );
-		RegisterElement( &body_scale );
+		hitbox_general.setup(XOR("target hitbox"), XOR("hitbox_general"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		RegisterElement(&hitbox_general);
 
-		minimal_damage.setup( XOR( "minimal damage" ), XOR( "minimal_damage" ), 1.f, 100.f, true, 0, 40.f, 1.f );
-		RegisterElement( &minimal_damage );
+		hitbox_history_general.setup(XOR("target hitbox history"), XOR("hitbox_history_general"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_history_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		RegisterElement(&hitbox_history_general);
 
-		minimal_damage_hp.setup( XOR( "scale damage on hp" ), XOR( "minimal_damage_hp" ) );
-		RegisterElement( &minimal_damage_hp );
+		multipoint_general.setup(XOR("multi-point"), XOR("multipoint_general"), { XOR("head"), XOR("chest"), XOR("body"), XOR("legs") });
+		multipoint_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		RegisterElement(&multipoint_general);
 
-		penetrate.setup( XOR( "penetrate walls" ), XOR( "penetrate" ) );
-		RegisterElement( &penetrate );
+		scale_general.setup("", XOR("hitbox_scale_general"), 1.f, 100.f, false, 0, 90.f, 1.f, XOR(L"%"));
+		scale_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		scale_general.AddShowCallback(callbacks::IsMultipointOnGeneral);
+		RegisterElement(&scale_general);
 
-		penetrate_minimal_damage.setup( "", XOR( "penetrate_minimal_damage" ), 1.f, 100.f, false, 0, 30.f, 1.f );
-		penetrate_minimal_damage.AddShowCallback( callbacks::IsPenetrationOn );
-		RegisterElement( &penetrate_minimal_damage );
+		body_scale_general.setup(XOR("stomach hitbox scale"), XOR("body_hitbox_scale_general"), 1.f, 100.f, true, 0, 50.f, 1.f, XOR(L"%"));
+		body_scale_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		body_scale_general.AddShowCallback(callbacks::IsMultipointBodyOnGeneral);
+		RegisterElement(&body_scale_general);
 
-		penetrate_minimal_damage_hp.setup( XOR( "scale penetration damage on hp" ), XOR( "penetrate_minimal_damage_hp" ) );
-		penetrate_minimal_damage_hp.AddShowCallback( callbacks::IsPenetrationOn );
-		RegisterElement( &penetrate_minimal_damage_hp );
+		hitchance_auto.setup(XOR("minimum hitchance"), XOR("hitchance_auto"));
+		hitchance_auto.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		RegisterElement(&hitchance_auto);
+
+		hitchance_amount_auto.setup("", XOR("hitchance_amount_auto"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
+		hitchance_amount_auto.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_amount_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		hitchance_amount_auto.AddShowCallback(callbacks::IsHitchanceOnAuto);
+		RegisterElement(&hitchance_amount_auto);
+
+		hitchance_awp.setup(XOR("minimum hitchance"), XOR("hitchance_awp"));
+		hitchance_awp.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		RegisterElement(&hitchance_awp);
+
+		hitchance_amount_awp.setup("", XOR("hitchance_amount_awp"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
+		hitchance_amount_awp.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_amount_awp.AddShowCallback(callbacks::IsHitchanceOnAWP);
+		hitchance_amount_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		RegisterElement(&hitchance_amount_awp);
+
+		hitchance_scout.setup(XOR("minimum hitchance"), XOR("hitchance_scout"));
+		hitchance_scout.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&hitchance_scout);
+
+		hitchance_amount_scout.setup("", XOR("hitchance_amount_scout"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
+		hitchance_amount_scout.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_amount_scout.AddShowCallback(callbacks::IsHitchanceOnScout);
+		hitchance_amount_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&hitchance_amount_scout);
+
+		hitchance_pistols.setup(XOR("minimum hitchance"), XOR("hitchance_pistols"));
+		hitchance_pistols.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		RegisterElement(&hitchance_pistols);
+
+		hitchance_amount_pistols.setup("", XOR("hitchance_amount_pistols"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
+		hitchance_amount_pistols.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_amount_pistols.AddShowCallback(callbacks::IsHitchanceOnPistols);
+		hitchance_amount_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		RegisterElement(&hitchance_amount_pistols);
+
+		hitchance_heavy.setup(XOR("minimum hitchance"), XOR("hitchance_heavy"));
+		hitchance_heavy.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		RegisterElement(&hitchance_heavy);
+
+		hitchance_amount_heavy.setup("", XOR("hitchance_amount_heavy"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
+		hitchance_amount_heavy.AddShowCallback(callbacks::IsConfigMM);
+		hitchance_amount_heavy.AddShowCallback(callbacks::IsHitchanceOnHeavy);
+		hitchance_amount_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		RegisterElement(&hitchance_amount_heavy);
+
+		minimal_damage_general.setup(XOR("minimum damage"), XOR("minimal_damage_general"), 1.f, 100.f, true, 0, 40.f, 1.f);
+		minimal_damage_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		RegisterElement(&minimal_damage_general);
+
+		/*minimal_damage_hp_general.setup(XOR("auto damage"), XOR("minimal_damage_hp_general"));
+		minimal_damage_hp_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		minimal_damage_hp_general.AddShowCallback(callbacks::IsDamageVisibleGeneral);
+		RegisterElement(&minimal_damage_hp_general);*/
+
+		penetrate_general.setup(XOR("automatic penetration"), XOR("penetrate_general"));
+		penetrate_general.AddShowCallback(callbacks::IsWeaponGeneral);
+		RegisterElement(&penetrate_general);
+
+
+
+		/* Auto */
+
+		hitbox_auto.setup(XOR("target hitbox"), XOR("hitbox_auto"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		RegisterElement(&hitbox_auto);
+
+		hitbox_history_auto.setup(XOR("target hitbox history"), XOR("hitbox_history_auto"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_history_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		RegisterElement(&hitbox_history_auto);
+
+		multipoint_auto.setup(XOR("multi-point"), XOR("multipoint_auto"), { XOR("head"), XOR("chest"), XOR("body"), XOR("legs") });
+		multipoint_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		RegisterElement(&multipoint_auto);
+
+		scale_auto.setup("", XOR("hitbox_scale_auto"), 1.f, 100.f, false, 0, 90.f, 1.f, XOR(L"%"));
+		scale_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		scale_auto.AddShowCallback(callbacks::IsMultipointOnAuto);
+		RegisterElement(&scale_auto);
+
+		body_scale_auto.setup(XOR("stomach hitbox scale"), XOR("body_hitbox_scale_auto"), 1.f, 100.f, true, 0, 50.f, 1.f, XOR(L"%"));
+		body_scale_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		body_scale_auto.AddShowCallback(callbacks::IsMultipointBodyOnAuto);
+		RegisterElement(&body_scale_auto);
+
+		minimal_damage_auto.setup(XOR("minimum damage"), XOR("minimal_damage_auto"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		minimal_damage_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		RegisterElement(&minimal_damage_auto);
+
+		dt_minimal_damage_auto.setup(XOR("doubletap minimum damage"), XOR("dt_minimal_damage_auto"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		dt_minimal_damage_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		RegisterElement(&dt_minimal_damage_auto);
+
+		/*minimal_damage_hp_auto.setup(XOR("auto damage"), XOR("minimal_damage_hp_auto"));
+		minimal_damage_hp_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		minimal_damage_hp_auto.AddShowCallback(callbacks::IsDamageVisibleAuto);
+		RegisterElement(&minimal_damage_hp_auto);*/
+
+		penetrate_auto.setup(XOR("automatic penetration"), XOR("penetrate_auto"));
+		penetrate_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		RegisterElement(&penetrate_auto);
+
+		/*penetrate_minimal_damage_auto.setup("", XOR("penetrate_minimal_damage_auto"), 1.f, 100.f, false, 0, 30.f, 1.f);
+		penetrate_minimal_damage_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		penetrate_minimal_damage_auto.AddShowCallback(callbacks::IsPenetrationOnAuto);
+		RegisterElement(&penetrate_minimal_damage_auto);
+
+		penetrate_minimal_damage_hp_auto.setup(XOR("auto damage"), XOR("penetrate_minimal_damage_hp_auto"));
+		penetrate_minimal_damage_hp_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		penetrate_minimal_damage_hp_auto.AddShowCallback(callbacks::IsDamageInVisibleAuto);
+		penetrate_minimal_damage_hp_auto.AddShowCallback(callbacks::IsPenetrationOnAuto);
+		RegisterElement(&penetrate_minimal_damage_hp_auto);*/
+
+		/* AWP */
+
+		hitbox_awp.setup(XOR("target hitbox"), XOR("hitbox_awp"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		RegisterElement(&hitbox_awp);
+
+		hitbox_history_awp.setup(XOR("target hitbox history"), XOR("hitbox_history_awp"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_history_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		RegisterElement(&hitbox_history_awp);
+
+		multipoint_awp.setup(XOR("multi-point"), XOR("multipoint_awp"), { XOR("head"), XOR("chest"), XOR("body"), XOR("legs") });
+		multipoint_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		RegisterElement(&multipoint_awp);
+
+		scale_awp.setup("", XOR("hitbox_scale_awp"), 1.f, 100.f, false, 0, 90.f, 1.f, XOR(L"%"));
+		scale_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		scale_awp.AddShowCallback(callbacks::IsMultipointOnAWP);
+		RegisterElement(&scale_awp);
+
+		body_scale_awp.setup(XOR("stomach hitbox scale"), XOR("body_hitbox_scale_awp"), 1.f, 100.f, true, 0, 50.f, 1.f, XOR(L"%"));
+		body_scale_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		body_scale_awp.AddShowCallback(callbacks::IsMultipointBodyOnAWP);
+		RegisterElement(&body_scale_awp);
+
+		minimal_damage_awp.setup(XOR("minimum damage"), XOR("minimal_damage_awp"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		minimal_damage_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		RegisterElement(&minimal_damage_awp);
+
+		/*minimal_damage_hp_awp.setup(XOR("auto damage"), XOR("minimal_damage_hp_awp"));
+		minimal_damage_hp_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		minimal_damage_hp_awp.AddShowCallback(callbacks::IsDamageVisibleAWP);
+		RegisterElement(&minimal_damage_hp_awp);*/
+
+		penetrate_awp.setup(XOR("automatic penetration"), XOR("penetrate_awp"));
+		penetrate_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		RegisterElement(&penetrate_awp);
+
+		/*penetrate_minimal_damage_awp.setup("", XOR("penetrate_minimal_damage_awp"), 1.f, 100.f, false, 0, 30.f, 1.f);
+		penetrate_minimal_damage_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		penetrate_minimal_damage_awp.AddShowCallback(callbacks::IsPenetrationOnAWP);
+		RegisterElement(&penetrate_minimal_damage_awp);
+
+		penetrate_minimal_damage_hp_awp.setup(XOR("auto damage"), XOR("penetrate_minimal_damage_hp_awp"));
+		penetrate_minimal_damage_hp_awp.AddShowCallback(callbacks::IsWeaponAWP);
+		penetrate_minimal_damage_hp_awp.AddShowCallback(callbacks::IsDamageInVisibleAWP);
+		penetrate_minimal_damage_hp_awp.AddShowCallback(callbacks::IsPenetrationOnAWP);
+		RegisterElement(&penetrate_minimal_damage_hp_awp);*/
+
+		/* Scout */
+
+		hitbox_scout.setup(XOR("target hitbox"), XOR("hitbox_scout"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&hitbox_scout);
+
+		hitbox_history_scout.setup(XOR("target hitbox history"), XOR("hitbox_history_scout"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_history_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&hitbox_history_scout);
+
+		multipoint_scout.setup(XOR("multi-point"), XOR("multipoint_scout"), { XOR("head"), XOR("chest"), XOR("body"), XOR("legs") });
+		multipoint_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&multipoint_scout);
+
+		scale_scout.setup("", XOR("hitbox_scale_scout"), 1.f, 100.f, false, 0, 90.f, 1.f, XOR(L"%"));
+		scale_scout.AddShowCallback(callbacks::IsWeaponScout);
+		scale_scout.AddShowCallback(callbacks::IsMultipointOnScout);
+		RegisterElement(&scale_scout);
+
+		body_scale_scout.setup(XOR("stomach hitbox scale"), XOR("body_hitbox_scale_scout"), 1.f, 100.f, true, 0, 50.f, 1.f, XOR(L"%"));
+		body_scale_scout.AddShowCallback(callbacks::IsWeaponScout);
+		body_scale_scout.AddShowCallback(callbacks::IsMultipointBodyOnScout);
+		RegisterElement(&body_scale_scout);
+
+		minimal_damage_scout.setup(XOR("minimum damage"), XOR("minimal_damage_scout"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		minimal_damage_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&minimal_damage_scout);
+
+		dt_minimal_damage_scout.setup(XOR("doubletap minimum damage"), XOR("dt_minimal_damage_scout"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		dt_minimal_damage_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&dt_minimal_damage_scout);
+
+		/*minimal_damage_hp_scout.setup(XOR("auto damage"), XOR("minimal_damage_hp_scout"));
+		minimal_damage_hp_scout.AddShowCallback(callbacks::IsWeaponScout);
+		minimal_damage_hp_scout.AddShowCallback(callbacks::IsDamageVisibleScout);
+		RegisterElement(&minimal_damage_hp_scout);*/
+
+		penetrate_scout.setup(XOR("automatic penetration"), XOR("penetrate_scout"));
+		penetrate_scout.AddShowCallback(callbacks::IsWeaponScout);
+		RegisterElement(&penetrate_scout);
+
+		/*penetrate_minimal_damage_scout.setup("", XOR("penetrate_minimal_damage_scout"), 1.f, 100.f, false, 0, 30.f, 1.f);
+		penetrate_minimal_damage_scout.AddShowCallback(callbacks::IsWeaponScout);
+		penetrate_minimal_damage_scout.AddShowCallback(callbacks::IsPenetrationOnScout);
+		RegisterElement(&penetrate_minimal_damage_scout);
+
+		penetrate_minimal_damage_hp_scout.setup(XOR("auto damage"), XOR("penetrate_minimal_damage_hp_scout"));
+		penetrate_minimal_damage_hp_scout.AddShowCallback(callbacks::IsWeaponScout);
+		penetrate_minimal_damage_hp_scout.AddShowCallback(callbacks::IsDamageInVisibleScout);
+		penetrate_minimal_damage_hp_scout.AddShowCallback(callbacks::IsPenetrationOnScout);
+		RegisterElement(&penetrate_minimal_damage_hp_scout);*/
+
+		/* Pistols */
+
+		hitbox_pistols.setup(XOR("target hitbox"), XOR("hitbox_pistols"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		RegisterElement(&hitbox_pistols);
+
+		hitbox_history_pistols.setup(XOR("target hitbox history"), XOR("hitbox_history_pistols"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_history_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		RegisterElement(&hitbox_history_pistols);
+
+		multipoint_pistols.setup(XOR("multi-point"), XOR("multipoint_pistols"), { XOR("head"), XOR("chest"), XOR("body"), XOR("legs") });
+		multipoint_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		RegisterElement(&multipoint_pistols);
+
+		scale_pistols.setup("", XOR("hitbox_scale_pistols"), 1.f, 100.f, false, 0, 90.f, 1.f, XOR(L"%"));
+		scale_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		scale_pistols.AddShowCallback(callbacks::IsMultipointOnPistols);
+		RegisterElement(&scale_pistols);
+
+		body_scale_pistols.setup(XOR("stomach hitbox scale"), XOR("body_hitbox_scale_pistols"), 1.f, 100.f, true, 0, 50.f, 1.f, XOR(L"%"));
+		body_scale_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		body_scale_pistols.AddShowCallback(callbacks::IsMultipointBodyOnPistols);
+		RegisterElement(&body_scale_pistols);
+
+		minimal_damage_pistols.setup(XOR("minimum damage"), XOR("minimal_damage_pistols"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		minimal_damage_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		RegisterElement(&minimal_damage_pistols);
+
+		/*.setup(XOR("auto damage"), XOR("minimal_damage_hp_pistols"));
+		minimal_damage_hp_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		minimal_damage_hp_pistols.AddShowCallback(callbacks::IsDamageVisiblePistols);
+		RegisterElement(&minimal_damage_hp_pistols);*/
+
+		penetrate_pistols.setup(XOR("automatic penetration"), XOR("penetrate_pistols"));
+		penetrate_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		RegisterElement(&penetrate_pistols);
+
+		/*penetrate_minimal_damage_pistols.setup("", XOR("penetrate_minimal_damage_pistols"), 1.f, 100.f, false, 0, 30.f, 1.f);
+		penetrate_minimal_damage_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		penetrate_minimal_damage_pistols.AddShowCallback(callbacks::IsPenetrationOnPistols);
+		RegisterElement(&penetrate_minimal_damage_pistols);
+
+		penetrate_minimal_damage_hp_pistols.setup(XOR("auto damage"), XOR("penetrate_minimal_damage_hp_pistols"));
+		penetrate_minimal_damage_hp_pistols.AddShowCallback(callbacks::IsWeaponPistol);
+		penetrate_minimal_damage_hp_pistols.AddShowCallback(callbacks::IsDamageInVisiblePistols);
+		penetrate_minimal_damage_hp_pistols.AddShowCallback(callbacks::IsPenetrationOnPistols);
+		RegisterElement(&penetrate_minimal_damage_hp_pistols);*/
+
+		/* Heavy Pistols */
+
+		hitbox_heavy.setup(XOR("target hitbox"), XOR("hitbox_heavy"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		RegisterElement(&hitbox_heavy);
+
+		hitbox_history_heavy.setup(XOR("target hitbox history"), XOR("hitbox_history_heavy"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
+		hitbox_history_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		RegisterElement(&hitbox_history_heavy);
+
+		multipoint_heavy.setup(XOR("multi-point"), XOR("multipoint_heavy"), { XOR("head"), XOR("chest"), XOR("body"), XOR("legs") });
+		multipoint_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		RegisterElement(&multipoint_heavy);
+
+		scale_heavy.setup("", XOR("hitbox_scale_heavy"), 1.f, 100.f, false, 0, 90.f, 1.f, XOR(L"%"));
+		scale_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		scale_heavy.AddShowCallback(callbacks::IsMultipointOnHeavy);
+		RegisterElement(&scale_heavy);
+
+		body_scale_heavy.setup(XOR("stomach hitbox scale"), XOR("body_hitbox_scale_heavy"), 1.f, 100.f, true, 0, 50.f, 1.f, XOR(L"%"));
+		body_scale_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		body_scale_heavy.AddShowCallback(callbacks::IsMultipointBodyOnHeavy);
+		RegisterElement(&body_scale_heavy);
+
+		minimal_damage_heavy.setup(XOR("minimum damage"), XOR("minimal_damage_heavy"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		minimal_damage_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		RegisterElement(&minimal_damage_heavy);
+
+		/*minimal_damage_hp_heavy.setup(XOR("auto damage"), XOR("minimal_damage_hp_heavy"));
+		minimal_damage_hp_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		minimal_damage_hp_heavy.AddShowCallback(callbacks::IsDamageVisibleHeavy);
+		RegisterElement(&minimal_damage_hp_heavy);*/
+
+		penetrate_heavy.setup(XOR("automatic penetration"), XOR("penetrate_heavy"));
+		penetrate_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		RegisterElement(&penetrate_heavy);
+
+		/*penetrate_minimal_damage_heavy.setup("", XOR("penetrate_minimal_damage_heavy"), 1.f, 100.f, false, 0, 30.f, 1.f);
+		penetrate_minimal_damage_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		penetrate_minimal_damage_heavy.AddShowCallback(callbacks::IsPenetrationOnHeavy);
+		RegisterElement(&penetrate_minimal_damage_heavy);
+
+		penetrate_minimal_damage_hp_heavy.setup(XOR("auto damage"), XOR("penetrate_minimal_damage_hp_heavy"));
+		penetrate_minimal_damage_hp_heavy.AddShowCallback(callbacks::IsWeaponHeavy);
+		penetrate_minimal_damage_hp_heavy.AddShowCallback(callbacks::IsDamageInVisibleHeavy);
+		penetrate_minimal_damage_hp_heavy.AddShowCallback(callbacks::IsPenetrationOnHeavy);
+		RegisterElement(&penetrate_minimal_damage_hp_heavy);*/
+
 
 		knifebot.setup( XOR( "aimbot with knife" ), XOR( "knifebot" ) );
 		RegisterElement( &knifebot );
@@ -106,14 +503,7 @@ public:
 		norecoil.setup( XOR( "compensate recoil" ), XOR( "norecoil" ) );
 		RegisterElement( &norecoil, 1 );
 
-		hitchance.setup( XOR( "hitchance" ), XOR( "hitchance" ) );
-		hitchance.AddShowCallback( callbacks::IsConfigMM );
-		RegisterElement( &hitchance, 1 );
-
-		hitchance_amount.setup( "", XOR( "hitchance_amount" ), 1.f, 100.f, false, 0, 50.f, 1.f, XOR( L"%" ) );
-		hitchance_amount.AddShowCallback( callbacks::IsConfigMM );
-		hitchance_amount.AddShowCallback( callbacks::IsHitchanceOn );
-		RegisterElement( &hitchance_amount, 1 );
+		
 
 		lagfix.setup( XOR( "predict fake-lag" ), XOR( "lagfix" ) );
 		RegisterElement( &lagfix, 1 );
@@ -1923,8 +2313,8 @@ public:
 			//	XOR( "m4a1" ),
 			//	XOR( "m4a1_silencer" ),
 				XOR( "ssg08" ),
-		//		XOR( "aug" ),
-		//		XOR( "sg556" ),
+			//	XOR( "aug" ),
+			//	XOR( "sg556" ),
 				XOR( "awp" ),
 				XOR( "scar20" ),
 				XOR( "g3sg1" ),
