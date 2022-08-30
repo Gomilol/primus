@@ -74,6 +74,7 @@ public:
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_viewPunchAngle;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_aimPunchAngleVel;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_vecViewOffset;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_bIsWalking;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_PlayerCommand;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_pCurrentCommand;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_iEFlags;
@@ -121,6 +122,8 @@ public:
 	XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_flAbsYaw;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_flConstraintRadius;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_hMyWeapons;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_ubEFNoInterpParity;
+
 
     void init( ) {
         // initialize a xored netvar.
@@ -179,6 +182,8 @@ public:
         INIT_XOREDNETVAR( m_hActiveWeapon,              HASH( "DT_BaseCombatCharacter" ),  HASH( "m_hActiveWeapon" ) );
         INIT_XOREDNETVAR( m_hGroundEntity,              HASH( "DT_CSPlayer" ),             HASH( "m_hGroundEntity" ) );
         INIT_XOREDNETVAR( m_iItemDefinitionIndex,       HASH( "DT_BaseAttributableItem" ), HASH( "m_iItemDefinitionIndex" ) );
+        INIT_XOREDNETVAR(m_ubEFNoInterpParity, HASH("DT_BasePlayer"), HASH("m_ubEFNoInterpParity"));
+
         INIT_XOREDNETVAR( m_iClip1,                     HASH( "DT_BaseCombatWeapon" ),     HASH( "m_iClip1" ) );
         INIT_XOREDNETVAR( m_iPrimaryReserveAmmoCount,   HASH( "DT_BaseCombatWeapon" ),     HASH( "m_iPrimaryReserveAmmoCount" ) );
         INIT_XOREDNETVAR( m_Activity,                   HASH( "CBaseCombatWeapon" ),       HASH( "m_Activity" ) );

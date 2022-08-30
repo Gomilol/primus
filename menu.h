@@ -27,7 +27,7 @@ public:
 	Slider		  scale_auto;
 	Slider		  body_scale_auto;
 	Slider		  minimal_damage_auto;
-	Slider		  dt_minimal_damage_auto;
+	//Slider		  dt_minimal_damage_auto;
 	Checkbox	  minimal_damage_hp_auto;
 	Checkbox	  penetrate_auto;
 	Slider		  penetrate_minimal_damage_auto;
@@ -61,7 +61,7 @@ public:
 	Slider		  scale_scout;
 	Slider		  body_scale_scout;
 	Slider		  minimal_damage_scout;
-	Slider		  dt_minimal_damage_scout;
+	//Slider		  dt_minimal_damage_scout;
 	Checkbox	  minimal_damage_hp_scout;
 	Checkbox	  penetrate_scout;
 	Slider		  penetrate_minimal_damage_scout;
@@ -265,9 +265,9 @@ public:
 		minimal_damage_auto.AddShowCallback(callbacks::IsWeaponAuto);
 		RegisterElement(&minimal_damage_auto);
 
-		dt_minimal_damage_auto.setup(XOR("doubletap minimum damage"), XOR("dt_minimal_damage_auto"), 1.f, 125.f, true, 0, 40.f, 1.f);
-		dt_minimal_damage_auto.AddShowCallback(callbacks::IsWeaponAuto);
-		RegisterElement(&dt_minimal_damage_auto);
+		//dt_minimal_damage_auto.setup(XOR("doubletap minimum damage"), XOR("dt_minimal_damage_auto"), 1.f, 125.f, true, 0, 40.f, 1.f);
+		//dt_minimal_damage_auto.AddShowCallback(callbacks::IsWeaponAuto);
+		//RegisterElement(&dt_minimal_damage_auto);
 
 		/*minimal_damage_hp_auto.setup(XOR("auto damage"), XOR("minimal_damage_hp_auto"));
 		minimal_damage_hp_auto.AddShowCallback(callbacks::IsWeaponAuto);
@@ -365,9 +365,9 @@ public:
 		minimal_damage_scout.AddShowCallback(callbacks::IsWeaponScout);
 		RegisterElement(&minimal_damage_scout);
 
-		dt_minimal_damage_scout.setup(XOR("doubletap minimum damage"), XOR("dt_minimal_damage_scout"), 1.f, 125.f, true, 0, 40.f, 1.f);
-		dt_minimal_damage_scout.AddShowCallback(callbacks::IsWeaponScout);
-		RegisterElement(&dt_minimal_damage_scout);
+		//dt_minimal_damage_scout.setup(XOR("doubletap minimum damage"), XOR("dt_minimal_damage_scout"), 1.f, 125.f, true, 0, 40.f, 1.f);
+	//dt_minimal_damage_scout.AddShowCallback(callbacks::IsWeaponScout);
+		//RegisterElement(&dt_minimal_damage_scout);
 
 		/*minimal_damage_hp_scout.setup(XOR("auto damage"), XOR("minimal_damage_hp_scout"));
 		minimal_damage_hp_scout.AddShowCallback(callbacks::IsWeaponScout);

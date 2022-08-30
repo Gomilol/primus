@@ -225,7 +225,18 @@ public:
 			( x * v.y ) - ( y * v.x )
 		};
 	}
+	__forceinline void validate_vec()
+	{
+		if (std::isnan(this->x)
+			|| std::isnan(this->y)
+			|| std::isnan(this->z))
+			this->clear();
 
+		if (std::isinf(this->x)
+			|| std::isinf(this->y)
+			|| std::isinf(this->z))
+			this->clear();
+	}
 	__forceinline float dist_to( const vec3_t &vOther ) const {
 		vec3_t delta;
 
