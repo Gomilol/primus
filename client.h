@@ -31,6 +31,8 @@ public:
 	void BackupPlayers( bool restore );
 	void DoMove( );
 	void DrawHUD( );
+	void ApplyUpdatedAnimation();
+	void UpdateLocalAnimations();
 	void UpdateInformation( );
 	void SetAngles( );
 	void UpdateAnimations( );
@@ -61,6 +63,13 @@ public:
 	float            m_abs_yaw;
 	float            m_poses[ 24 ];
 	bool			 m_pressing_move;
+
+	// other
+	C_AnimationLayer m_layers[13];
+	float			 m_left_thickness[64], m_right_thickness[64], m_at_target_angle[64];
+	int	             m_tickbase;
+	int	             m_fixed_tickbase;
+	matrix3x4_t		 fake_matrix[128];
 
 	// active weapon variables.
 	Weapon*     m_weapon;
@@ -109,12 +118,16 @@ public:
 	ang_t  m_rotation;
 	ang_t  m_radar;
 	float  m_body;
+	float  m_spawn_time;
 	float  m_body_pred;
 	float  m_speed;
+	bool   firstBreak;
 	float  m_anim_time;
 	float  m_anim_frame;
 	bool   m_ground;
+	bool   m_update_local_animation;
 	bool   m_lagcomp;
+
 	
 	// hack username.
 	std::string m_user;

@@ -301,7 +301,7 @@ void Client::DoMove( ) {
 
 void Client::EndMove( CUserCmd* cmd ) {
 	// update client-side animations.
-	UpdateInformation( );
+	//UpdateInformation( );
 
 	// if matchmaking mode, anti untrust clamp.
 	if( g_menu.main.config.mode.get( ) == 0 )
@@ -372,42 +372,148 @@ void Client::OnTick( CUserCmd* cmd ) {
 	g_inputpred.restore( );
 }
 
-void Client::SetAngles( ) {
-	if( !g_cl.m_local || !g_cl.m_processing )
-		return;
 
-	// set the nointerp flag.
-	g_cl.m_local->m_fEffects( ) |= EF_NOINTERP;
-
-	// apply the rotation.
-	g_cl.m_local->SetAbsAngles( m_rotation );
-	g_cl.m_local->m_angRotation( ) = m_rotation;
-	g_cl.m_local->m_angNetworkAngles( ) = m_rotation;
-
-	// set radar angles.
-	if( g_csgo.m_input->CAM_IsThirdPerson( ) )
-		g_csgo.m_prediction->SetLocalViewAngles( m_radar );
-}
 
 void Client::UpdateAnimations( ) {
-	if( !g_cl.m_local || !g_cl.m_processing )
+	if (!g_cl.m_local || !g_cl.m_processing)
 		return;
 
-	CCSGOPlayerAnimState* state = g_cl.m_local->m_PlayerAnimState( );
-	if( !state )
+	// set the interp flag on
+	g_cl.m_local->m_fEffects() &= ~EF_NOINTERP;
+
+	CCSGOPlayerAnimState* state = g_cl.m_local->m_PlayerAnimState();
+	if (!state)
 		return;
 
 	// prevent model sway on player.
-	g_cl.m_local->m_AnimOverlay( )[ 12 ].m_weight = 0.f;
+	g_cl.m_local->m_AnimOverlay()[12].m_weight = 0.f;
 
 	// update animations with last networked data.
-	g_cl.m_local->SetPoseParameters( g_cl.m_poses );
+	g_cl.m_local->SetPoseParameters(g_cl.m_poses);
 
 	// update abs yaw with last networked abs yaw.
-	g_cl.m_local->SetAbsAngles( ang_t( 0.f, g_cl.m_abs_yaw, 0.f ) );
+	g_cl.m_local->SetAbsAngles(ang_t(0.f, g_cl.m_abs_yaw, 0.f));
 }
 
-void Client::UpdateInformation( ) {
+void Client::ApplyUpdatedAnimation() {
+	if (!g_cl.m_local || !g_cl.m_processing)
+		return;
+
+	CCSGOPlayerAnimState* state = g_cl.m_local->m_PlayerAnimState();
+	if (!state)
+		return;
+
+	// set radar angles.
+	if (g_csgo.m_input->CAM_IsThirdPerson())
+		g_csgo.m_prediction->SetLocalViewAngles(m_radar);
+
+	// update abs yaw with last networked abs yaw.
+	g_cl.m_local->SetAbsAngles(ang_t(0.f, g_cl.m_abs_yaw, 0.f));
+}
+
+
+void Client::UpdateLocalAnimations() {
+	if (!g_cl.m_local || !g_cl.m_processing)
+		return;
+
+	CCSGOPlayerAnimState* state = g_cl.m_local->m_PlayerAnimState();
+	if (!state)
+		return;
+
+	// local respawned.
+	if (g_cl.m_local->m_flSpawnTime() != g_cl.m_spawn_time) {
+		// reset animation state.
+		game::ResetAnimationState(state);
+
+		// note new spawn time.
+		g_cl.m_spawn_time = g_cl.m_local->m_flSpawnTime();
+	}
+
+	auto ApplyLocalPlayerModifications = [&]() -> void {
+		// havent got updated layers and poses.
+		if (!g_cl.m_layers || !g_cl.m_poses)
+			return;
+
+		// note - vio; related to fixing animations on high ping.
+		auto delta = math::NormalizedAngle(state->m_cur_feet_yaw - state->m_goal_feet_yaw);
+		if ((delta / state->m_eye_pitch) > 120.f) {
+			// set this shit.
+			g_cl.m_layers[3].m_cycle = 0.0f;
+			g_cl.m_layers[3].m_weight = 0.0f;
+
+			// get 979 activity.
+			auto act = g_cl.m_local->GetSequenceActivity(979);
+
+			// apply it.
+			g_cl.m_layers[3].m_sequence = act;
+		}
+
+		// prevent model sway on player.
+		if (g_cl.m_layers)
+			g_cl.m_layers[12].m_weight = 0.f;
+	};
+
+	// backup curtime and frametime.
+	const float v1 = g_csgo.m_globals->m_curtime;
+	const float v2 = g_csgo.m_globals->m_frametime;
+
+	// get tickbase in time and modify it.
+	const float v3 = game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase());
+	const float v4 = (v3 / g_csgo.m_globals->m_interval) + .5f;
+
+	// set curtime and frametime.
+	g_csgo.m_globals->m_curtime = v3;
+	g_csgo.m_globals->m_frametime = g_csgo.m_globals->m_interval;
+
+	// llama does it.
+	state->m_cur_feet_yaw = 0.f;
+
+	// CCSGOPlayerAnimState::Update, bypass already animated checks.
+	if (state->m_frame >= v4)
+		state->m_frame = v4 - 1;
+
+	// update anim update delta like the server does.
+	state->m_update_delta = std::max(0.0f, g_csgo.m_globals->m_curtime - state->m_frame);
+
+	// is it time to update?
+	if (g_csgo.m_globals->m_curtime != state->m_time) {
+		// allow the game to update animations this tick.
+		g_cl.m_update_local_animation = true;
+
+		// update our animation state.
+		game::UpdateAnimationState(state, ang_t(m_angle.x, m_angle.y, m_angle.z));
+
+		// update animations.
+		g_cl.m_local->UpdateClientSideAnimationEx();
+
+		// stop the game from updating animations this tick.
+		g_cl.m_update_local_animation = false;
+
+		// store updated abs yaw.
+		g_cl.m_abs_yaw = state->m_goal_feet_yaw;
+
+		// grab updated layers & poses.
+		g_cl.m_local->GetPoseParameters(g_cl.m_poses);
+		g_cl.m_local->GetAnimLayers(g_cl.m_layers);
+	}
+
+	// modify our animations to look steezy.
+	ApplyLocalPlayerModifications();
+
+	// send poses and layers to server.
+	g_cl.m_local->SetPoseParameters(g_cl.m_poses);
+	g_cl.m_local->SetAnimLayers(g_cl.m_layers);
+
+	// update rotation.
+	g_cl.m_local->SetAbsAngles(g_cl.m_rotation);
+
+	// restore globals.
+	g_csgo.m_globals->m_curtime = v1;
+	g_csgo.m_globals->m_frametime = v2;
+
+}
+
+/*void Client::UpdateInformation() {
 	if( g_cl.m_lag > 0 )
 		return;
 
@@ -472,7 +578,7 @@ void Client::UpdateInformation( ) {
 	m_rotation = g_cl.m_local->m_angAbsRotation( );
 	m_speed = state->m_speed;
 	m_ground = state->m_ground;
-}
+}*/
 
 void Client::print( const std::string text, ... ) {
 	va_list     list;

@@ -52,11 +52,13 @@ void Hooks::BuildTransformations( int a2, int a3, int a4, int a5, int a6, int a7
 }
 
 void Hooks::UpdateClientSideAnimation( ) {
-	if( g_cl.m_processing )
-		g_cl.SetAngles( );
-	else {
-		g_hooks.m_UpdateClientSideAnimation( this );
-	}
+	if (!(g_csgo.m_engine->IsInGame()))
+		return;
+
+	if (!g_cl.m_update_local_animation)
+		return;
+
+	g_hooks.m_UpdateClientSideAnimation(this);
 }
 
 Weapon *Hooks::GetActiveWeapon( ) {
@@ -94,12 +96,12 @@ void CustomEntityListener::OnEntityCreated( Entity *ent ) {
 		        // hook this on every player.
 		        g_hooks.m_DoExtraBoneProcessing = vmt->add< Hooks::DoExtraBoneProcessing_t >( Player::DOEXTRABONEPROCESSING, util::force_cast( &Hooks::DoExtraBoneProcessing ) );
 
-		        // local gets special treatment.
-		        if( player->index( ) == g_csgo.m_engine->GetLocalPlayer( ) ) {
-		        	g_hooks.m_UpdateClientSideAnimation = vmt->add< Hooks::UpdateClientSideAnimation_t >( Player::UPDATECLIENTSIDEANIMATION, util::force_cast( &Hooks::UpdateClientSideAnimation ) );
-                    g_hooks.m_GetActiveWeapon           = vmt->add< Hooks::GetActiveWeapon_t >( Player::GETACTIVEWEAPON, util::force_cast( &Hooks::GetActiveWeapon ) );
-                    g_hooks.m_BuildTransformations      = vmt->add< Hooks::BuildTransformations_t >( Player::BUILDTRANSFORMATIONS, util::force_cast( &Hooks::BuildTransformations ) );
-                }
+				// local gets special treatment.
+				if (player->index() == g_csgo.m_engine->GetLocalPlayer()) {
+					g_hooks.m_UpdateClientSideAnimation = vmt->add< Hooks::UpdateClientSideAnimation_t >(Player::UPDATECLIENTSIDEANIMATION, util::force_cast(&Hooks::UpdateClientSideAnimation));
+					g_hooks.m_GetActiveWeapon = vmt->add< Hooks::GetActiveWeapon_t >(Player::GETACTIVEWEAPON, util::force_cast(&Hooks::GetActiveWeapon));
+					g_hooks.m_BuildTransformations = vmt->add< Hooks::BuildTransformations_t >(Player::BUILDTRANSFORMATIONS, util::force_cast(&Hooks::BuildTransformations));
+				}
             }
         }
 

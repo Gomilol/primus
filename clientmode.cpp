@@ -70,6 +70,64 @@ bool Hooks::CreateMove( float time, CUserCmd* cmd ) {
 	// invoke move function.
 	g_cl.OnTick( cmd );
 
+	void UpdateInformation(); {
+		if (!g_cl.m_local || !g_cl.m_processing)
+			return false;
+
+		if (g_cl.m_lag > 0)
+			return false;
+
+		CCSGOPlayerAnimState* state = g_cl.m_local->m_PlayerAnimState();
+		if (!state)
+			return false;
+
+		
+			if (g_csgo.m_cl->m_choked_commands > 0)
+				return false;
+
+		// update time.
+		g_cl.m_anim_frame = g_csgo.m_globals->m_curtime - g_cl.m_anim_time;
+		g_cl.m_anim_time = g_csgo.m_globals->m_curtime;
+
+		// current angle will be animated.
+		g_cl.m_angle = g_cl.m_cmd->m_view_angles;
+
+		// fix landing anim.
+		if (state->m_land && !state->m_dip_air && state->m_dip_cycle > 0.f)
+			g_cl.m_angle.x = -12.f;
+
+		math::clamp(g_cl.m_angle.x, -90.f, 90.f);
+		g_cl.m_angle.normalize();
+
+		// set lby to predicted value.
+		//g_cl.m_local->m_flLowerBodyYawTarget() = g_cl.m_body;
+
+		// pull the lower body direction towards the eye direction, but only when the player is moving
+		if (state->m_ground) {
+			// from csgo src sdk.
+			const float CSGO_ANIM_LOWER_REALIGN_DELAY = 1.1f;
+
+			// we are moving.
+			if (state->m_speed > 0.1f || fabsf(state->m_fall_velocity) > 100.f) {
+				g_cl.m_body_pred = g_cl.m_anim_time + (CSGO_ANIM_LOWER_REALIGN_DELAY * 0.2f);
+				g_cl.m_body = g_cl.m_angle.y;
+			}
+
+			// we arent moving.
+			else {
+				// time for an update.
+				if (g_cl.m_anim_time > g_cl.m_body_pred) {
+					g_cl.m_body_pred = g_cl.m_anim_time + CSGO_ANIM_LOWER_REALIGN_DELAY;
+					g_cl.m_body = g_cl.m_angle.y;
+				}
+			}
+		}
+
+		// save updated data.
+		g_cl.m_rotation = g_cl.m_local->m_angAbsRotation();
+		g_cl.m_speed = state->m_speed;
+		g_cl.m_ground = state->m_ground;
+	}
 	return false;
 }
 

@@ -26,7 +26,7 @@ void render::init() {
 	esp_small = Font(XOR("Small Fonts"), 8, FW_NORMAL, FONTFLAG_OUTLINE);
 	hud = Font(XOR("Tahoma"), 16, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	hudster = Font(XOR("Verdana"), 12, FW_BLACK, FONTFLAG_ANTIALIAS);
-	cs = Font(XOR("WeaponIcons"), 14, FW_NORMAL, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
+	cs = Font(XOR("WeaponIcons"), 10, FW_NORMAL, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	indicator = Font(XOR("Verdana"), 26, FW_BOLD, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 }
 
