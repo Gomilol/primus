@@ -46,21 +46,37 @@ public:
 	hitboxcan_t m_hitboxes;
 	
 	// resolve data.
+	// resolve data.
 	int       m_shots;
 	int       m_missed_shots;
+	int       m_air_missed_shots;
 	LagRecord m_walk_record;
 
+	int m_upd_index;
 	float     m_body_update;
 	bool      m_moved;
 
+	float     m_best_angle;
+	float     m_best_angle_dist;
+
+	float     m_old_body;
+	bool      m_has_body_updated;
+
+	int       m_body_index;
+	int       m_last_moving_index;
+
 	int m_stand_index;
 	int m_stand_index2;
-	int m_body_index;
+	int m_moving_index;
+	int m_unknown_move;
+	int m_anti_index;
+	int m_freestanding_index;
+	int m_lby_delta_index;
+	int m_last_move;
 
 
 	// data about the LBY proxy.
 	float m_body;
-	float m_old_body;
 
 	//std::deque< float >            m_lbyt_update;
 	//std::deque< float >			   m_prefer_stand;

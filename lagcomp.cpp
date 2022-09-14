@@ -130,12 +130,12 @@ bool LagCompensation::StartPrediction( AimPlayer* data ) {
 	// start our predicton loop.
 	while( true ) {
 		// can the player shoot within his lag delta.
-		/*if( shot && shot >= simulation && shot < simulation + lag ) {
-		
+		/*if (shot && shot >= simulation && shot < simulation + lag) {
+
 			// if so his new lag will be the time until he shot again.
 			lag = shot - simulation;
-			math::clamp( lag, 3, 15 );
-		
+			math::clamp(lag, 1, 14);
+
 			// only predict a shot once.
 			shot = 0;
 		}*/

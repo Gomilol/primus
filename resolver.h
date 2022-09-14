@@ -8,11 +8,19 @@ public:
 		RESOLVE_NONE = 0,
 		RESOLVE_WALK,
 		RESOLVE_STAND,
-		RESOLVE_STAND1,
-		RESOLVE_STAND2,
 		RESOLVE_AIR,
+		RESOLVE_LBY_UPDATE,
+		RESOLVE_OVERRIDE,
+		RESOLVE_LAST_LBY,
+		RESOLVE_BRUTEFORCE,
+		RESOLVE_FREESTAND,
+		RESOLVE_DELTA,
 		RESOLVE_BODY,
 		RESOLVE_STOPPED_MOVING,
+		RESOLVE_UNKNOWM,
+		RESOLVE_LASTMOVE,
+		RESOLVE_STAND2,
+		RESOLVE_STAND1
 	};
 
 public:
@@ -26,18 +34,27 @@ public:
 
 	void MatchShot( AimPlayer* data, LagRecord* record );
 	void SetMode( LagRecord* record );
+	bool Spin_Detection(AimPlayer* data);
 
 	void ResolveAngles( Player* player, LagRecord* record );
 	void ResolveWalk( AimPlayer* data, LagRecord* record );
-	void ResolveStand( AimPlayer* data, LagRecord* record );
+	void ResolveStand(AimPlayer* data, LagRecord* record, Player* player);
 	void StandNS( AimPlayer* data, LagRecord* record );
-	void ResolveAir( AimPlayer* data, LagRecord* record );
+	void ResolveAir( AimPlayer* data, LagRecord* record, Player* player );
 
 	void AirNS( AimPlayer* data, LagRecord* record );
 	void ResolvePoses( Player* player, LagRecord* record );
+	void AntiFreestand(LagRecord* record);
+
+
+
+	float spindelta;
+	float spinbody;
+	int spin_step;
 
 public:
 	std::array< vec3_t, 64 > m_impacts;
+	int	   iPlayers[64];
 };
 
 extern Resolver g_resolver;

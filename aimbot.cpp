@@ -118,8 +118,7 @@ void FixVelocity(Player* m_player, LagRecord* record, LagRecord* previous, float
 
 void AimPlayer::UpdateAnimations(LagRecord* record) {
 	CCSGOPlayerAnimState* state = m_player->m_PlayerAnimState();
-	if (!state)
-		return;
+
 
 	// player respawned.
 	if (m_player->m_flSpawnTime() != m_spawn) {

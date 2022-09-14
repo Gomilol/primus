@@ -173,151 +173,189 @@ void Resolver::ResolveAngles( Player* player, LagRecord* record ) {
 		ResolveWalk( data, record );
 
 	else if( record->m_mode == Modes::RESOLVE_STAND )
-		ResolveStand( data, record );
+		ResolveStand( data, record, player );
 
 	else if( record->m_mode == Modes::RESOLVE_AIR )
-		ResolveAir( data, record );
+		ResolveAir( data, record, player );
 
 	// normalize the eye angles, doesn't really matter but its clean.
 	math::NormalizeAngle( record->m_eye_angles.y );
 }
 
 void Resolver::ResolveWalk( AimPlayer* data, LagRecord* record ) {
-	// apply lby to eyeangles.
 	record->m_eye_angles.y = record->m_body;
+	record->m_mode = RESOLVE_WALK;
+	//record->m_resolver_mode = "moving enemy";
 
 	// delay body update.
-	data->m_body_update = record->m_anim_time + 0.22f;
+	data->m_body_update = record->m_anim_time + 0.22;  // 0.22
 
 	// reset stand and body index.
-	data->m_stand_index  = 0;
+	data->m_moving_index = 0;
+	data->m_stand_index = 0;
 	data->m_stand_index2 = 0;
-	data->m_body_index   = 0;
+	data->m_body_index = 0;
+	data->m_freestanding_index = 0;
+	data->m_lby_delta_index = 0;
+	data->m_unknown_move = 0;
+	data->m_last_move = 0;
+	data->m_missed_shots = 0;
+
 
 	// copy the last record that this player was walking
 	// we need it later on because it gives us crucial data.
-	std::memcpy( &data->m_walk_record, record, sizeof( LagRecord ) );
+	std::memcpy(&data->m_walk_record, record, sizeof(LagRecord));
 }
 
-void Resolver::ResolveStand( AimPlayer* data, LagRecord* record ) {
+bool CheckLBY(Player* player, LagRecord* record, LagRecord* prev_record) // I would recommend a sequence check -LoOsE (note from sopmk: sequence checks arent always effective, as some lby breakers suppress 979, hence why i'm checking animation values too)
+{
+	if (player->m_vecVelocity().length_2d() > 1.1f)
+		return false; // cant break here
+
+	bool choking = fabs(player->m_flSimulationTime() - player->m_flOldSimulationTime()) > g_csgo.m_globals->m_interval;
+
+	if (int i = 0; i < 13, i++)
+	{
+		auto layer = record->m_layers[i];
+		auto prev_layer = prev_record->m_layers[i];
+
+		// make sure that the animation happened
+		if (layer.m_cycle != prev_layer.m_cycle)
+		{
+			if (layer.m_cycle > 0.9 || layer.m_weight == 1.f) // triggered layer
+			{
+				if (i == 3) // adjust layer sanity check. If it is the adjust layer, they are most likely breaking LBY
+					return true;
+
+				// lby flick lol!
+				if (choking && fabs(math::NormalizedAngle(record->m_body - prev_record->m_body)) > 5.f)
+					return true;
+			}
+			else if (choking) // for improper LBY breakers
+			{
+				if (player->GetSequenceActivity(layer.m_sequence) == 979)
+				{
+					if (player->GetSequenceActivity(prev_layer.m_sequence) == 979)
+					{
+						return true; // we can be pretty sure that they are breaking LBY
+					}
+				}
+			}
+			return false;
+		}
+		return false;
+	}
+	return false;
+}
+
+bool Resolver::Spin_Detection(AimPlayer* data) {
+
+	if (data->m_records.empty())
+		return false;
+
+	spin_step = 0;
+
+	size_t size{};
+
+	// iterate records.
+	for (const auto& it : data->m_records) {
+		if (it->dormant())
+			break;
+
+		// increment total amount of data.
+		++size;
+	}
+
+	if (size > 2) {
+		LagRecord* record = data->m_records[0].get();
+
+		spindelta = (record->m_body - data->m_records[1].get()->m_body) / data->m_records[1].get()->m_lag;
+		spinbody = record->m_body;
+		float delta2 = (data->m_records[1].get()->m_body - data->m_records[2].get()->m_body) / data->m_records[2].get()->m_lag;
+
+		return spindelta == delta2 && spindelta > 0.5f;
+	}
+	else
+		return false;
+}
+void Resolver::ResolveStand(AimPlayer* data, LagRecord* record, Player* player) {
+
+	data->m_moved = false;
+
 	// for no-spread call a seperate resolver.
-	if( g_menu.main.config.mode.get( ) == 1 ) {
-		StandNS( data, record );
+	if (g_menu.main.config.mode.get() == 1) {
+		StandNS(data, record);
 		return;
 	}
 
 	// get predicted away angle for the player.
-	float away = GetAwayAngle( record );
+	float away = GetAwayAngle(record);
 
 	// pointer for easy access.
 	LagRecord* move = &data->m_walk_record;
 
+	C_AnimationLayer* curr = &record->m_layers[3];
+	int act = data->m_player->GetSequenceActivity(curr->m_sequence);
+
+
 	// we have a valid moving record.
-	if( move->m_sim_time > 0.f ) {
+	///if (move->m_sim_time > 0.f && !move->dormant() && !record->dormant() && data->m_last_move < 1) { // move->m_sim_time > 0.f && !move->dormant() && !record->dormant() && data->m_last_move < 1
+	if (move->m_sim_time > 0.f && !move->dormant() && !record->dormant() && data->m_last_move < 1) {
 		vec3_t delta = move->m_origin - record->m_origin;
 
 		// check if moving record is close.
-		if( delta.length( ) <= 128.f ) {
+		if (delta.length() <= 100.f) {
 			// indicate that we are using the moving lby.
 			data->m_moved = true;
 		}
 	}
-
+	bool breaking = CheckLBY(data->m_player, record, FindLastRecord(data));
 	// a valid moving context was found
-	if( data->m_moved ) {
-		float diff = math::NormalizedAngle( record->m_body - move->m_body );
+	if (data->m_moved == true) {
+		float diff = math::NormalizedAngle(record->m_body - move->m_body);
 		float delta = record->m_anim_time - move->m_anim_time;
 
+
+		if (data->m_last_move < 1) {
+			record->m_mode = Modes::RESOLVE_LASTMOVE;
+			float diff = math::NormalizedAngle(record->m_body - move->m_body);
+			float delta = record->m_anim_time - move->m_anim_time;
+			//if (data->m_last_move < 1) {
+			record->m_mode = Modes::RESOLVE_LASTMOVE;
+			//data->m_last_move
+
+			//record->m_resolver_mode = "last lby";
+
+			record->m_eye_angles.y = move->m_body;
+
+			//record->m_resolver_mode = "last lby";
+			//}
+		}
+
+
+
 		// it has not been time for this first update yet.
-		if( delta < 0.22f ) {
-			// set angles to current LBY.
-			record->m_eye_angles.y = move->m_body;
+		if (data->m_records.size() >= 2)
+		{
+			LagRecord* previous = data->m_records[1].get();
 
-			// set resolve mode.
-			record->m_mode = Modes::RESOLVE_STOPPED_MOVING;
-
-			// exit out of the resolver, thats it.
-			return;
-		}
-
-		// LBY SHOULD HAVE UPDATED HERE.
-		else if( record->m_anim_time >= data->m_body_update ) {
-			// only shoot the LBY flick 3 times.
-			// if we happen to miss then we most likely mispredicted.
-			if( data->m_body_index <= 3 ) {
-				// set angles to current LBY.
-				record->m_eye_angles.y = record->m_body;
-
-				// predict next body update.
-				data->m_body_update = record->m_anim_time + 1.1f;
-
-				// set the resolve mode.
-				record->m_mode = Modes::RESOLVE_BODY;
-
-				return;
+			if (previous)
+			{
+				if (record->m_body != previous->m_body && data->m_body_index < 1)
+				{
+					record->m_eye_angles.y = record->m_body;
+					data->m_body_update = record->m_anim_time + 1.1f;
+					iPlayers[record->m_player->index()] = false;
+					record->m_mode = Modes::RESOLVE_BODY;
+					//record->m_resolver_mode = "lby flicking";
+				}
 			}
-
-			// set to stand1 -> known last move.
-			record->m_mode = Modes::RESOLVE_STAND1;
-
-			C_AnimationLayer* curr = &record->m_layers[ 3 ];
-			int act = data->m_player->GetSequenceActivity( curr->m_sequence );
-
-			// ok, no fucking update. apply big resolver.
-			record->m_eye_angles.y = move->m_body;
-
-			// every third shot do some fuckery.
-			if ( !( data->m_stand_index % 3 ) )
-				record->m_eye_angles.y += g_csgo.RandomFloat( -35.f, 35.f );
-
-			// jesus we can fucking stop missing can we?
-			if( data->m_stand_index > 6 && act != 980 ) {
-				// lets just hope they switched ang after move.
-				record->m_eye_angles.y = move->m_body + 180.f;
-			}
-
-			// we missed 4 shots.
-			else if( data->m_stand_index > 4 && act != 980 ) {
-				// try backwards.
-				record->m_eye_angles.y = away + 180.f;
-			}
-
-			return;
 		}
 	}
+	else
+		AntiFreestand(record);
+	//GetDirectionAngle(player->index(), player, record);
 
-	// stand2 -> no known last move.
-	record->m_mode = Modes::RESOLVE_STAND2;
-
-	switch( data->m_stand_index2 % 6 ) {
-
-	case 0:
-		record->m_eye_angles.y = away + 180.f;
-		break;
-
-	case 1:
-		record->m_eye_angles.y = record->m_body;
-		break;
-
-	case 2:
-		record->m_eye_angles.y = record->m_body + 180.f;
-		break;
-
-	case 3:
-		record->m_eye_angles.y = record->m_body + 110.f;
-		break;
-
-	case 4:
-		record->m_eye_angles.y = record->m_body - 110.f;
-		break;
-
-	case 5:
-		record->m_eye_angles.y = away;
-		break;
-
-	default:
-		break;
-	}
 }
 
 void Resolver::StandNS( AimPlayer* data, LagRecord* record ) {
@@ -362,7 +400,7 @@ void Resolver::StandNS( AimPlayer* data, LagRecord* record ) {
 	record->m_body = record->m_eye_angles.y;
 }
 
-void Resolver::ResolveAir( AimPlayer* data, LagRecord* record ) {
+void Resolver::ResolveAir( AimPlayer* data, LagRecord* record, Player* player ) {
 	// for no-spread call a seperate resolver.
 	if( g_menu.main.config.mode.get( ) == 1 ) {
 		AirNS( data, record );
@@ -381,7 +419,7 @@ void Resolver::ResolveAir( AimPlayer* data, LagRecord* record ) {
 		record->m_mode = Modes::RESOLVE_STAND;
 
 		// invoke our stand resolver.
-		ResolveStand( data, record );
+		ResolveStand( data, record, player );
 
 		// we are done.
 		return;
@@ -461,4 +499,98 @@ void Resolver::ResolvePoses( Player* player, LagRecord* record ) {
 		// body_yaw
 		player->m_flPoseParameter( )[ 11 ] = g_csgo.RandomInt( 1, 3 ) * 0.25f;
 	}
+}
+
+void Resolver::AntiFreestand(LagRecord* record) {
+	// constants
+	constexpr float STEP{ 4.f };
+	constexpr float RANGE{ 32.f };
+
+	// best target.
+	vec3_t enemypos = record->m_player->GetShootPosition();
+	float away = GetAwayAngle(record);
+
+	// construct vector of angles to test.
+	std::vector< AdaptiveAngle > angles{ };
+	angles.emplace_back(away - 179.f);
+	angles.emplace_back(away + 89.f);
+	angles.emplace_back(away - 89.f);
+
+	// start the trace at the your shoot pos.
+	vec3_t start = g_cl.m_local->GetShootPosition();
+
+	// see if we got any valid result.
+	// if this is false the path was not obstructed with anything.
+	bool valid{ false };
+
+	// iterate vector of angles.
+	for (auto it = angles.begin(); it != angles.end(); ++it) {
+
+		// compute the 'rough' estimation of where our head will be.
+		vec3_t end{ enemypos.x + std::cos(math::deg_to_rad(it->m_yaw)) * RANGE,
+			enemypos.y + std::sin(math::deg_to_rad(it->m_yaw)) * RANGE,
+			enemypos.z };
+
+		// draw a line for debugging purposes
+		/*Color clr = g_menu.main.aimbot.debugaimcol.get();
+			g_csgo.m_debug_overlay->AddLineOverlay(start, end, clr.r(), clr.g(), clr.b(), true, 0.1f); */
+
+			// compute the direction.
+		vec3_t dir = end - start;
+		float len = dir.normalize();
+
+		// should never happen.
+		if (len <= 0.f)
+			continue;
+
+		// step thru the total distance, 4 units per step.
+		for (float i{ 0.f }; i < len; i += STEP) {
+			// get the current step position.
+			vec3_t point = start + (dir * i);
+
+			// get the contents at this point.
+			int contents = g_csgo.m_engine_trace->GetPointContents(point, MASK_SHOT_HULL);
+
+			// contains nothing that can stop a bullet.
+			if (!(contents & MASK_SHOT_HULL))
+				continue;
+
+			float mult = 1.f;
+
+			// over 50% of the total length, prioritize this shit.
+			if (i > (len * 0.5f))
+				mult = 1.25f;
+
+			// over 90% of the total length, prioritize this shit.
+			if (i > (len * 0.75f))
+				mult = 1.55f;
+
+			// over 90% of the total length, prioritize this shit.
+			if (i > (len * 0.9f))
+				mult = 1.75f;
+
+			// append 'penetrated distance'. 
+			it->m_dist += (STEP * mult);
+
+			// mark that we found anything.
+			valid = true;
+		}
+	}
+
+	if (!valid) {
+		return;
+	}
+
+	// put the most distance at the front of the container.a
+	std::sort(angles.begin(), angles.end(),
+		[](const AdaptiveAngle& a, const AdaptiveAngle& b) {
+			return a.m_dist > b.m_dist;
+		});
+
+	// the best angle should be at the front now.
+
+	AdaptiveAngle* best = &angles.front();
+
+	record->m_mode = Modes::RESOLVE_FREESTAND; // set our mode accordingly 
+	record->m_eye_angles.y = best->m_yaw;
 }
