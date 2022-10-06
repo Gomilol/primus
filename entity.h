@@ -1296,7 +1296,9 @@ public:
 	__forceinline float &m_fLastShotTime() {
 		return get< float >(g_entoffsets.m_fLastShotTime);
 	}
-
+	__forceinline int& m_nSmokeEffectTickBegin() {
+		return get< int >(g_entoffsets.m_nSmokeEffectTickBegin);
+	}
 public:
 	enum indices : size_t {
 		SETMODELINDEX = 75,

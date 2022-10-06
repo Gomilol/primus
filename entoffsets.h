@@ -123,6 +123,7 @@ public:
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_flConstraintRadius;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_hMyWeapons;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_ubEFNoInterpParity;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_nSmokeEffectTickBegin;
 
 
     void init( ) {

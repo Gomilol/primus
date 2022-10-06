@@ -60,6 +60,7 @@ public:
 		};
 	}
 
+
 	// member accessors.
 	__forceinline uint8_t& r( ) { return m_r; }
 	__forceinline uint8_t& g( ) { return m_g; }
@@ -67,6 +68,9 @@ public:
 	__forceinline uint8_t& a( ) { return m_a; }
 	__forceinline uint32_t& rgba( ) { return m_rgba; }
 
+	Color alpha(int _a) {
+		return Color(r(), g(), b(), _a);
+	}
     // operators.
     __forceinline operator uint32_t() { return m_rgba; }
 };

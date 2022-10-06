@@ -6,9 +6,12 @@ namespace render {
 	Font menu_shade;;
 	Font esp;;
 	Font esp_small;;
+	Font esp_small2;;
+
 	Font hud;;
 	Font hudster;;
 	Font cs;;
+	Font grenade;;
 	Font indicator;;
 }
 
@@ -24,9 +27,11 @@ void render::init() {
 	menu_shade = Font(XOR("Tahoma"), 12, FW_NORMAL, FONTFLAG_DROPSHADOW);
 	esp = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	esp_small = Font(XOR("Small Fonts"), 8, FW_NORMAL, FONTFLAG_OUTLINE);
+	esp_small2 = Font(XOR("Small Fonts"), 12, FW_NORMAL, FONTFLAG_OUTLINE);
 	hud = Font(XOR("Tahoma"), 16, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	hudster = Font(XOR("Verdana"), 12, FW_BLACK, FONTFLAG_ANTIALIAS);
 	cs = Font(XOR("WeaponIcons"), 10, FW_NORMAL, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
+	grenade = Font(XOR("WeaponIcons"), 25, FW_MEDIUM, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	indicator = Font(XOR("Verdana"), 26, FW_BOLD, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 }
 
@@ -101,6 +106,36 @@ void render::circle( int x, int y, int radius, int segments, Color color ) {
 
 	g_csgo.m_surface->DrawTexturedPolygon( vertices.size( ), vertices.data( ) );
 }
+void render::WorldCircleOutline(vec3_t origin, float radius, float angle, Color color) {
+	std::vector< Vertex > vertices{};
+
+	float step = (1.f / radius) + math::deg_to_rad(angle);
+
+	float lat = 1.f;
+	vertices.clear();
+
+	for (float lon{}; lon < math::pi_2; lon += step) {
+		vec3_t point{
+			origin.x + (radius * std::sin(lat) * std::cos(lon)),
+			origin.y + (radius * std::sin(lat) * std::sin(lon)),
+			origin.z + (radius * std::cos(lat) - (radius / 2))
+		};
+
+		vec2_t screen;
+		if (WorldToScreen(point, screen))
+			vertices.emplace_back(screen);
+	}
+	static int texture = g_csgo.m_surface->CreateNewTextureID(false);
+
+	g_csgo.m_surface->DrawSetTextureRGBA(texture, &colors::white, 1, 1);
+	g_csgo.m_surface->DrawSetColor(color);
+
+	//g_csgo.m_surface->DrawSetTexture(texture);
+	//g_csgo.m_surface->DrawTexturedPolygon(vertices.size(), vertices.data());
+
+	g_csgo.m_surface->DrawTexturedPolyLine(vertices.size(), vertices.data());
+}
+
 void render::gradient( int x, int y, int w, int h, Color color1, Color color2 ) {
 	g_csgo.m_surface->DrawSetColor( color1 );
 	g_csgo.m_surface->DrawFilledRectFade( x, y, x + w, y + h, color1.a( ), 0, false );
@@ -156,6 +191,22 @@ void render::Font::string( int x, int y, Color color, const std::string& text,St
 
 void render::Font::string( int x, int y, Color color, const std::stringstream& text, StringFlags_t flags /*= render::ALIGN_LEFT */ ) {
 	wstring( x, y, color, util::MultiByteToWide( text.str( ) ), flags );
+}
+void render::Font::semi_filled_text_v(int x, int y, Color color, const std::string& text, StringFlags_t flags, float factor)
+{
+	auto indicator_size = wsize(util::MultiByteToWide(text));
+	auto position = vec2_t(x, y);
+
+	wstring(x, y, Color(30, 30, 30, 200), util::MultiByteToWide(text), flags);
+	*(bool*)((DWORD)g_csgo.m_surface + 0x280) = true;
+	int x1, y1, x2, y2;
+	g_csgo.m_surface->get_drawing_area(x1, y1, x2, y2);
+	g_csgo.m_surface->limit_drawing_area(position.x, position.y, int(indicator_size.m_width), (int)indicator_size.m_height * factor);
+
+	wstring(x, y, color, util::MultiByteToWide(text), flags);
+
+	g_csgo.m_surface->limit_drawing_area(x1, y1, x2, y2);
+	*(bool*)((DWORD)g_csgo.m_surface - +0x280) = false;
 }
 
 void render::Font::wstring( int x, int y, Color color, const std::wstring& text, StringFlags_t flags /*= render::ALIGN_LEFT */ ) {

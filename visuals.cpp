@@ -442,56 +442,6 @@ void Visuals::draw( Entity* ent ) {
 		DrawProjectile( ent->as< Weapon* >( ) );
 }
 
-void Visuals::DrawProjectile( Weapon* ent ) {
-	vec2_t screen;
-	vec3_t origin = ent->GetAbsOrigin( );
-	if( !render::WorldToScreen( origin, screen ) )
-		return;
-
-	Color col = g_menu.main.visuals.proj_color.get( );
-	col.a( ) = 0xb4;
-
-	// draw decoy.
-	if( ent->is( HASH( "CDecoyProjectile" ) ) )
-		render::esp_small.string( screen.x, screen.y, col, XOR( "DECOY" ), render::ALIGN_CENTER );
-
-	// draw molotov.
-	else if( ent->is( HASH( "CMolotovProjectile" ) ) )
-		render::esp_small.string( screen.x, screen.y, col, XOR( "MOLLY" ), render::ALIGN_CENTER );
-
-	else if( ent->is( HASH( "CBaseCSGrenadeProjectile" ) ) ) {
-		const model_t* model = ent->GetModel( );
-
-		if( model ) {
-			// grab modelname.
-			std::string name{ ent->GetModel( )->m_name };
-
-			if( name.find( XOR( "flashbang" ) ) != std::string::npos )
-				render::esp_small.string( screen.x, screen.y, col, XOR( "FLASH" ), render::ALIGN_CENTER );
-
-			else if( name.find( XOR( "fraggrenade" ) ) != std::string::npos ) {
-
-				// grenade range.
-				if( g_menu.main.visuals.proj_range.get( 0 ) )
-					render::sphere( origin, 350.f, 5.f, 1.f, g_menu.main.visuals.proj_range_color.get( ) );
-
-				render::esp_small.string( screen.x, screen.y, col, XOR( "FRAG" ), render::ALIGN_CENTER );
-			}
-		}
-	}
-
-	// find classes.
-	else if( ent->is( HASH( "CInferno" ) ) ) {
-		// fire range.
-		if( g_menu.main.visuals.proj_range.get( 1 ) )
-			render::sphere( origin, 150.f, 5.f, 1.f, g_menu.main.visuals.proj_range_color.get( ) );
-
-		render::esp_small.string( screen.x, screen.y, col, XOR( "FIRE" ), render::ALIGN_CENTER );
-	}
-
-	else if( ent->is( HASH( "CSmokeGrenadeProjectile" ) ) )
-		render::esp_small.string( screen.x, screen.y, col, XOR( "SMOKE" ), render::ALIGN_CENTER );
-}
 
 void Visuals::DrawItem( Weapon* item ) {
 	// we only want to draw shit without owner.

@@ -189,6 +189,13 @@ public:
 	__forceinline void DrawOutlinedCircle( int x, int y, int radius, int segments ) {
 		return util::get_method< void( __thiscall* )( decltype( this ), int, int, int, int ) >( this, DRAWOUTLINEDCIRCLE )( this, x, y, radius, segments );
 	}
+	void limit_drawing_area(int x, int y, int w, int h) {
+		return util::get_method< void(__thiscall*)(void*, int, int, int, int) >(this, 147)(this, x, y, x + w + 1, y + h + 1);
+	}
+
+	void get_drawing_area(int& x, int& y, int& w, int& h) {
+		return util::get_method< void(__thiscall*)(void*, int&, int&, int&, int&) >(this, 146)(this, x, y, w, h);
+	}
 
 	__forceinline void DrawFilledRectFade( int x0, int y0, int x1, int y1, uint32_t alpha0, uint32_t alpha1, bool bHorizontal ) {
 		return util::get_method< void( __thiscall* )( decltype( this ), int, int, int, int, uint32_t, uint32_t, bool ) >( this, DRAWFILLEDRECTFADE )( this, x0, y0, x1, y1, alpha0, alpha1, bHorizontal );

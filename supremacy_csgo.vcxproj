@@ -307,6 +307,7 @@
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="events.cpp" />
     <ClCompile Include="firebullets.cpp" />
+    <ClCompile Include="grenade_visual.cpp" />
     <ClCompile Include="keybind.cpp" />
     <ClCompile Include="matchframework.cpp" />
     <ClCompile Include="materialsystem.cpp" />

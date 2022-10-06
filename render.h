@@ -47,6 +47,7 @@ namespace render {
 
 		void string( int x, int y, Color color, const std::string& text, StringFlags_t flags = ALIGN_LEFT );
 		void string( int x, int y, Color color, const std::stringstream& text, StringFlags_t flags = ALIGN_LEFT );
+		void semi_filled_text_v(int x, int y, Color color, const std::string& text, StringFlags_t flags, float factor);
 		void wstring( int x, int y, Color color, const std::wstring& text, StringFlags_t flags = ALIGN_LEFT );
 		render::FontSize_t size( const std::string& text );
 		FontSize_t wsize( const std::wstring& text );
@@ -56,9 +57,12 @@ namespace render {
 	extern Font menu_shade;
 	extern Font esp;
 	extern Font esp_small;
+	extern Font esp_small2;;
 	extern Font hud;
 	extern Font hudster;;
 	extern Font cs;
+	extern Font grenade;
+
 	extern Font indicator;
 
 
@@ -71,6 +75,7 @@ namespace render {
 	void rect_filled_fade( int x, int y, int w, int h, Color color, int a1, int a2 );
 	void rect_outlined( int x, int y, int w, int h, Color color, Color color2 );
 	void circle( int x, int y, int radius, int segments, Color color );
+	void WorldCircleOutline(vec3_t origin, float radius, float angle, Color color);
 	void gradient( int x, int y, int w, int h, Color color1, Color color2 );
 	void sphere( vec3_t origin, float radius, float angle, float scale, Color color );
 	Vertex RotateVertex( const vec2_t& p, const Vertex& v, float angle );

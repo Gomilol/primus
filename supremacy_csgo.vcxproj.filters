@@ -476,5 +476,8 @@
     <ClCompile Include="clientstate.cpp">
       <Filter>Source Files\hooks\game</Filter>
     </ClCompile>
+    <ClCompile Include="grenade_visual.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
