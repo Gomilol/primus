@@ -18,3 +18,6 @@ Debug/_IsIncrementalBuild
 *.ilk
 *.vcxproj
 supremacy_csgo.vcxproj
+output/release/please fucking kill me.ipdb
+*.iobj
+*.ipdb
