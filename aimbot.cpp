@@ -14,7 +14,7 @@ void FixVelocity(Player* m_player, LagRecord* record, LagRecord* previous, float
 			auto v35 = record->m_layers[6].m_weight * v30;
 			record->m_velocity *= v35 / record->m_velocity.length();
 		}
-		else
+		else 
 			record->m_velocity.clear();
 
 		if (record->m_flags & 1)
