@@ -22,6 +22,10 @@ void Form::draw( ) {
 	Color color = g_gui.m_color;
 	color.a( ) = m_alpha;
 
+	// accent color
+	palette::accent = g_gui.m_color;
+	c_help::notify = palette::accent;
+
 	// background.
 	render::rect_filled( m_x, m_y, m_width, m_height, { 12, 12, 12, m_alpha } );
 

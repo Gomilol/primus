@@ -1,5 +1,13 @@
 #pragma once
-
+namespace palette {
+	inline auto backround = Color(13, 13, 13);
+	inline auto backround2 = Color(8, 8, 8);
+	inline auto outline_1 = Color(5, 5, 5);
+	inline auto outline_2 = Color(26, 26, 26);
+	inline auto accent = Color(165, 108, 245);
+	inline auto accent_2 = Color(220, 220, 220, 40);
+	inline auto elements_outline = Color(5, 5, 5);
+}
 class Form {
 	friend class GUI;
 	friend class Element;

@@ -64,7 +64,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 	if (ent->is(HASH("CMolotovProjectile"))) {
 		//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
 	//	render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-		render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "l", render::ALIGN_LEFT);
+		render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "p", render::ALIGN_LEFT);
 	}
 
 	else if (ent->is(HASH("CBaseCSGrenadeProjectile"))) {
@@ -78,7 +78,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 				//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
 				//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-				render::esp_small.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "molotov", render::ALIGN_LEFT);
+				render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "k", render::ALIGN_LEFT);
 
 
 			}
@@ -88,7 +88,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 				//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
 				//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-				render::esp_small.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "he grenade", render::ALIGN_LEFT);
+				render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "l", render::ALIGN_LEFT);
 
 			}
 		}
@@ -109,12 +109,12 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 		//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
 		//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-		render::esp_small.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "molotov", render::ALIGN_LEFT);
+		render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "p", render::ALIGN_LEFT);
 
 
 	}
 	 // commented out due to a very odd crash that shouldn't appear.
-	/*else if (ent->is(HASH("CSmokeGrenadeProjectile"))) {
+	else if (ent->is(HASH("CSmokeGrenadeProjectile"))) {
 		Weapon* pSmokeEffect = reinterpret_cast<Weapon*>(ent);
 		const float spawn_time = game::TICKS_TO_TIME(pSmokeEffect->m_nSmokeEffectTickBegin());
 		const double reltime = ((spawn_time + 17.441) - g_csgo.m_globals->m_curtime);
@@ -122,7 +122,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 
 
-		if (spawn_time > 0.f) { // l3d saves me
+		
 			if (dist <= 85) { // we render the circle like a  boss
 				float radius = 144.f;
 				render::WorldCircleOutline(origin, radius, 1.f, smoke_color);
@@ -130,8 +130,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 			//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
 			//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-			render::esp_small.string(screen.x - 5, screen.y - 23, { 255,255,255,255 }, "smoke", render::ALIGN_LEFT);
-		}
+			render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "m", render::ALIGN_LEFT);
 
-	}*/
+	}
 }
