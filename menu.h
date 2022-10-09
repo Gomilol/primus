@@ -966,9 +966,6 @@ public:
 	Checkbox      ammo;
 	Colorpicker   item_color;
 	Checkbox      proj;
-	Colorpicker   proj_color;
-	MultiDropdown proj_range;
-	Colorpicker   proj_range_color;
 	MultiDropdown planted_c4;
 	Checkbox      disableteam;
 	Dropdown	  world;
@@ -1015,15 +1012,6 @@ public:
 
 		proj.setup( XOR( "projectiles" ), XOR( "proj" ) );
 		RegisterElement( &proj );
-
-		proj_color.setup( XOR( "color" ), XOR( "proj_color" ), colors::white );
-		RegisterElement( &proj_color );
-
-		proj_range.setup( XOR( "projectile range" ), XOR( "proj_range" ), { XOR( "frag" ), XOR( "molly" ) } );
-		RegisterElement( &proj_range );
-
-		proj_range_color.setup( XOR( "color" ), XOR( "proj_range_color" ), colors::burgundy );
-		RegisterElement( &proj_range_color );
 
 		planted_c4.setup( XOR( "planted c4" ), XOR( "planted_c4" ), { XOR( "on screen (2D)" ), XOR( "on bomb (3D)" ) } );
 		RegisterElement( &planted_c4 );
