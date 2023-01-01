@@ -923,10 +923,15 @@ void Visuals::DrawPlayer( Player* player ) {
 						// less then a 5th of the bullets left.
 						if( current <= ( int ) std::round( max / 5 ) && !reload )
 							render::esp_small.string( box.x + bar, box.y + box.h + offset, { 255, 255, 255, low_alpha }, std::to_string( current ), render::ALIGN_CENTER );
-
-						offset += 6;
+						if (!g_menu.main.players.weapon_mode.get(1) && !g_menu.main.players.weapon_mode.get(2)) { // so basically whats happening
+							offset += 6;
+						}
+						else if (g_menu.main.players.weapon_mode.get(0) || g_menu.main.players.weapon_mode.get(1)) {
+							offset += 14;
+						}
 					}
-
+					
+	
 					// text.
 					if( g_menu.main.players.weapon_mode.get(0) && !g_menu.main.players.weapon_mode.get(1)) {
 						// construct std::string instance of localized weapon name.
@@ -960,11 +965,15 @@ void Visuals::DrawPlayer( Player* player ) {
 
 						 // icons are super fat..
 					 // move them back up.
-						 offset += 8;
+						 offset += 9;
 
 						 std::string icon = tfm::format(XOR("%c"), GetWeaponIcon(weapon->m_iItemDefinitionIndex()));
 						 render::cs.string(box.x + box.w / 2, box.y + box.h + offset, { 255, 255, 255, low_alpha }, icon, render::ALIGN_CENTER);
 					 }
+
+					 // shit code - gomi :)
+
+					
 				}
 			}
 		}

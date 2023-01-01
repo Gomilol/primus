@@ -139,7 +139,7 @@ public:
 //hitchance_general.AddShowCallback(callbacks::IsWeaponGeneral);
 //RegisterElement(&hitchance_general);
 
-		hitchance_amount_general.setup("", XOR("hitchance_amount_general"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
+		hitchance_amount_general.setup("General Hitchance", XOR("hitchance_amount_general"), 1.f, 100.f, false, 0, 50.f, 1.f, XOR(L"%"));
 		hitchance_amount_general.AddShowCallback(callbacks::IsConfigMM);
 		hitchance_amount_general.AddShowCallback(callbacks::IsWeaponGeneral);
 		//hitchance_amount_general.AddShowCallback(callbacks::IsHitchanceOnGeneral);

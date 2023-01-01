@@ -62,34 +62,43 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 	// draw molotov.
 	if (ent->is(HASH("CMolotovProjectile"))) {
-		//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
-	//	render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-		render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "p", render::ALIGN_LEFT);
+		Sleep(2);
+		//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
+		//	render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
+		if (dist <= 85) { // lets not see nades across the map yeah ?
+			render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
+			render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "p", render::ALIGN_LEFT);
+		}
 	}
 
 	else if (ent->is(HASH("CBaseCSGrenadeProjectile"))) {
 		const model_t* model = ent->GetModel();
-
+		Sleep(2);
 		if (model) {
 			// grab modelname.
 			std::string name{ ent->GetModel()->m_name };
 
 			if (name.find(XOR("flashbang")) != std::string::npos) {
 
-				//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
+				//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
 				//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-				render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "k", render::ALIGN_LEFT);
-
+				if (dist <= 85) {
+					Sleep(2);
+					render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "k", render::ALIGN_LEFT);
+					render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
+				}
 
 			}
 
 			else if (name.find(XOR("fraggrenade")) != std::string::npos) {
 
 
-				//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
+				//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
 				//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-				render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "l", render::ALIGN_LEFT);
-
+				if (dist <= 85) {
+					render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "l", render::ALIGN_LEFT);
+					render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
+				}
 			}
 		}
 	}
@@ -100,17 +109,18 @@ void Visuals::DrawProjectile(Weapon* ent) {
 		const double reltime = ((spawn_time + 7.031) - g_csgo.m_globals->m_curtime);
 		const double factor = reltime / 7.031;
 
-
+		Sleep(2);
 		// pandorel
 		if (dist <= 85) { // we render the circle like a boss
 			float radius = 144.f;
 			render::WorldCircleOutline(origin, radius, 1.f, moly_color);
 		}
 
-		//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
 		//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-		render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "p", render::ALIGN_LEFT);
-
+		if (dist <= 85) {
+			render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "p", render::ALIGN_LEFT);
+			render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
+		}
 
 	}
 	 // commented out due to a very odd crash that shouldn't appear.
@@ -119,18 +129,23 @@ void Visuals::DrawProjectile(Weapon* ent) {
 		const float spawn_time = game::TICKS_TO_TIME(pSmokeEffect->m_nSmokeEffectTickBegin());
 		const double reltime = ((spawn_time + 17.441) - g_csgo.m_globals->m_curtime);
 		const double factor = reltime / 17.441;
-
-
+	
 
 		
-			if (dist <= 85) { // we render the circle like a  boss
+	
+			if (dist <= 85 && pSmokeEffect->m_bReadyToDraw()) { // we render the circle like a  boss
+
 				float radius = 144.f;
+			
 				render::WorldCircleOutline(origin, radius, 1.f, smoke_color);
-			}
+			
+		}
 
-			//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 120));
+		//	render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
 			//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
-			render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "m", render::ALIGN_LEFT);
-
+			if (dist <= 85) {
+				render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "m", render::ALIGN_LEFT);
+				render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
+			}
 	}
 }

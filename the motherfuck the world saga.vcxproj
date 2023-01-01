@@ -280,6 +280,7 @@
     <ClInclude Include="tab.h" />
     <ClInclude Include="tinyformat.h" />
     <ClInclude Include="trace.h" />
+    <ClInclude Include="undefeated.h" />
     <ClInclude Include="unique_vector.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="utlvector.h" />
