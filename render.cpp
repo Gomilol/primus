@@ -25,7 +25,7 @@ void render::init() {
 	AddFontMemResourceEx((void*)undefeated, sizeof(undefeated), nullptr, &g_hooks.undefeated2);
 	menu = Font(XOR("Tahoma"), 12, FW_NORMAL, FONTFLAG_NONE);
 	menu_shade = Font(XOR("Tahoma"), 12, FW_NORMAL, FONTFLAG_DROPSHADOW);
-	esp = Font(XOR("Tahoma"), 12, DT_TOP | DT_LEFT | DT_NOCLIP, FONTFLAG_ANTIALIAS);
+	esp = Font(XOR("Verdana"), 12, FW_BOLD, FONTFLAG_DROPSHADOW);
 	esp_small = Font(XOR("Small Fonts"), 8, FW_NORMAL, FONTFLAG_OUTLINE);
 	esp_small2 = Font(XOR("Small Fonts"), 12, FW_NORMAL, FONTFLAG_OUTLINE);
 	hud = Font(XOR("Tahoma"), 16, FW_NORMAL, FONTFLAG_ANTIALIAS);

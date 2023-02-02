@@ -95,6 +95,22 @@ struct studiomeshdata_t {
 
 class IMaterial;
 
+class IMaterialVar {
+private:
+public:
+	void set_float_value(float value) {
+		util::get_method< void(__thiscall*)(decltype(this), float) >(this, 4)(this, value);
+	}
+
+	void set_vec_value(float r, float g, float b) {
+		util::get_method< void(__thiscall*)(decltype(this), float, float, float) >(this, 11)(this, r, g, b);
+	}
+
+	void set_string_value(char const* value) {
+		util::get_method< void(__thiscall*)(decltype(this), char const*) >(this, 6)(this, value);
+	}
+};
+
 struct studioloddata_t {
 	studiomeshdata_t	*m_pMeshData;
 	float				 m_SwitchPoint;
@@ -175,6 +191,7 @@ public:
 		GETFLAG                 = 30
 	};
 
+
 	__forceinline const char* GetName( ) {
 		return util::get_method< const char* ( __thiscall* )( void* ) >( this, GETNAME )( this );
 	}
@@ -206,7 +223,14 @@ public:
 	__forceinline bool GetFlag( int fl ) {
 		return util::get_method< bool( __thiscall* )( void*, int ) >( this, GETFLAG )( this, fl );
 	}
+
+	__forceinline IMaterialVar* FindVar(const char* varName, bool* found, bool complain = false) {
+		return util::get_method< IMaterialVar* (__thiscall*)(void*, const char*, bool*, bool) >(this, 11)(this, varName, found, complain);
+	}
+
 };
+
+class IMatRenderContext;
 
 class IMaterialSystem {
 public:
@@ -242,6 +266,10 @@ public:
 
 	__forceinline IMaterial* GetMaterial( uint16_t handle ) {
 		return util::get_method< IMaterial*( __thiscall* )( void*, uint16_t ) >( this, GETMATERIAL )( this, handle );
+	}
+
+	IMatRenderContext* get_render_context() {
+		return util::get_method(this, 115).as< IMatRenderContext* (__thiscall*)(decltype(this)) >()(this);
 	}
 
 	// find material by hash.
@@ -292,6 +320,15 @@ public:
 
 	__forceinline bool IsForcedMaterialOverride( ) {
 		return util::get_method< bool( __thiscall* )( void * ) >( this, ISFORCEDMATERIALOVERRIDE )( this );
+	}
+
+	__forceinline void DrawModelExecute(IMatRenderContext* ctx, const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld = NULL) {
+		return util::get_method(this, DRAWMODELEXECUTE).as< void(__thiscall*)(decltype(this), IMatRenderContext*, const DrawModelState_t&, const ModelRenderInfo_t&, matrix3x4_t*)>()(this, ctx, state, pInfo, pCustomBoneToWorld);
+	}
+
+	__forceinline void ForceMat(IMaterial* mat, int nOverrideType = 0, int nOverrides = 0)
+	{
+		return util::get_method(this, FORCEDMATERIALOVERRIDE).as< void(__thiscall*)(decltype(this), IMaterial*, int&, int&)>()(this, mat, nOverrideType, nOverrides);
 	}
 };
 

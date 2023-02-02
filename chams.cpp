@@ -67,7 +67,50 @@ void Chams::SetupMaterial( IMaterial* mat, Color col, bool z_flag ) {
 	g_csgo.m_studio_render->ForcedMaterialOverride( mat );
 }
 
-void Chams::init( ) {
+void Chams::init() {
+
+	std::ofstream("csgo/materials/promethea_glowoverlay.vmt") << R"#("VertexLitGeneric" 
+		{
+		"$additive" "1"
+		"$envmap" "models/effects/cube_white"
+		"$envmaptint" "[1 1 1]"
+		"$envmapfresnel" "1"
+		"$envmapfresnelminmaxexp" "[0 1 2]"
+		"$alpha" "0.8"
+		})#";
+
+	std::ofstream("csgo\\materials\\promethea_metallic.vmt") << R"#("VertexLitGeneric" 
+	{
+		"$basetexture" "vgui/white_additive"
+		"$ignorez"      "1"
+		"$envmap"       "env_cubemap"
+		"$normalmapalphaenvmapmask"  "1"
+		"$envmapcontrast"             "1"
+		"$nofog"        "1"
+		"$model"        "1"
+		"$nocull"       "0"
+		"$selfillum"    "1"
+		"$halflambert"  "1"
+		"$znearer"      "0"
+		"$flat"         "1"
+		})#";
+
+	std::ofstream("csgo\\materials\\promethea_shaded.vmt") << R"#("VertexLitGeneric" 
+	{
+		"$basetexture"               "vgui/white_additive"
+		"$bumpmap"                   "effects\flat_normal"
+		"$phong"                     "1"
+		"$phongexponent"             "16"
+		"$phongboost"                "16"
+		"$phongfresnelranges"        "[8 12 16]"
+		"$phongtint"                 "[255 0 0]"
+		"$selfillum"                 "1"
+		"$halflambert"               "1"
+		"$znearer"                   "0"
+		"$nocull"                    "1"
+		"$reflectivity"              "[1 1 1]"
+	})#";
+
 	// find stupid materials.
 	debugambientcube = g_csgo.m_material_system->FindMaterial( XOR( "debug/debugambientcube" ), XOR( "Model textures" ) );
 	debugambientcube->IncrementReferenceCount( );

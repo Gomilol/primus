@@ -25,6 +25,21 @@ void math::NormalizeAngle( float &angle ) {
     angle = ( angle < 0.f ) ? angle + ( 360.f * rot ) : angle - ( 360.f * rot );
 }
 
+vec3_t math::CalcAngle(const vec3_t& vecSource, const vec3_t& vecDestination) {
+    vec3_t vAngle;
+    vec3_t delta((vecSource.x - vecDestination.x), (vecSource.y - vecDestination.y), (vecSource.z - vecDestination.z));
+    double hyp = sqrt(delta.x * delta.x + delta.y * delta.y);
+
+    vAngle.x = float(atanf(float(delta.z / hyp)) * 57.295779513082f);
+    vAngle.y = float(atanf(float(delta.y / delta.x)) * 57.295779513082f);
+    vAngle.z = 0.0f;
+
+    if (delta.x >= 0.0)
+        vAngle.y += 180.0f;
+
+    return vAngle;
+}
+
 float math::ApproachAngle( float target, float value, float speed ) {
     float delta;
 

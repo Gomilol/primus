@@ -94,10 +94,42 @@ void events::player_hurt( IGameEvent* evt ) {
     }
 }
 
-void events::bullet_impact( IGameEvent* evt ) {
+void events::bullet_impact(IGameEvent* evt) {
 	// forward event to resolver impact processing.
-	g_shots.OnImpact( evt );
+	if (g_cl.m_processing) {
+		//auto impact = g_csgo.sv_showimpacts;
+
+		g_shots.OnImpact(evt);
+
+		if (!evt || !g_cl.m_local)
+			return;
+
+		int attacker = g_csgo.m_engine->GetPlayerForUserID(evt->m_keys->FindKey(HASH("userid"))->GetInt());
+		if (attacker != g_csgo.m_engine->GetLocalPlayer())
+			return;
+
+
+
+		Player* shooter = g_csgo.m_entlist->GetClientEntity<Player*>(g_csgo.m_engine->GetPlayerForUserID(evt->m_keys->FindKey(HASH("userid"))->GetInt()));
+		if (!shooter || shooter != g_cl.m_local)
+			return;
+
+		impact_info info;
+		info.x = evt->GetFloat("x");
+		info.y = evt->GetFloat("y");
+		info.z = evt->GetFloat("z");
+		info.time = g_csgo.m_globals->m_curtime;
+		g_visuals.impacts.push_back(info);
+
+		Color color = g_menu.main.visuals.server_impact.get();
+		color.a() = (g_menu.main.visuals.impact_alpha.get() * 2.55);
+
+		if (g_menu.main.visuals.bullet_impacts.get())
+			g_csgo.m_debug_overlay->AddBoxOverlay(vec3_t(info.x, info.y, info.z), vec3_t(-2, -2, -2), vec3_t(2, 2, 2), ang_t(0, 0, 0), color.r(), color.g(), color.b(), color.a(), 4.f);
+
+	}
 }
+
 
 void events::item_purchase( IGameEvent* evt ) {
 	int           team, purchaser;
