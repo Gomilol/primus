@@ -281,107 +281,53 @@ bool Resolver::Spin_Detection(AimPlayer* data) {
 	else
 		return false;
 }
-void Resolver::ResolveStand(AimPlayer* data, LagRecord* record, Player* player)
-{
-    // Get the predicted away angle for the player.
-    float away_angle = GetAwayAngle(record);
+void Resolver::ResolveStand(AimPlayer* data, LagRecord* record, Player* player) {
+	data->m_moved = false;
 
-    // Pointer for easy access.
-    LagRecord* move = &data->m_walk_record;
-    
-    if (move->m_sim_time > 0.f)
-    {
-        vec3_t delta = move->m_origin - record->m_origin;
-
-        // Check if the moving record is close.
-        if (delta.length() <= 128.f)
-        {
-            // Indicate that we are using the moving last body update time.
-            data->m_moved = true;
-        }
-    }
-
-    float body_diff = math::NormalizedAngle(record->m_body - move->m_body);
-    float anim_delta = record->m_anim_time - move->m_anim_time;
-
-    // Check if the delta is within a valid range.
-    if (anim_delta >= 0.22f && anim_delta <= 0.3f)
-    {
-        // Check if the record's animation time is greater than or equal to the body update time.
-        if (record->m_anim_time >= data->m_body_update)
-        {
-            // Check if the body index is less than or equal to 3.
-            if (data->m_body_index <= 3)
-            {
-                record->m_eye_angles.y = record->m_body;
-                data->m_body_update = record->m_anim_time + 1.1f;
-                record->m_mode = Modes::RESOLVE_BODY;
-            }
-            else
-            {
-                record->m_mode = Modes::RESOLVE_STAND1;
-                C_AnimationLayer* curr = &record->m_layers[3];
-                int activity = data->m_player->GetSequenceActivity(curr->m_sequence);
-
-                record->m_eye_angles.y = move->m_body;
-
-                // Check if the stand index is divisible by 3 with no remainder.
-                if (!(data->m_stand_index % 3))
-                {
-                    record->m_eye_angles.y += g_csgo.RandomFloat(-35.f, 35.f);
-                }
-
-                // Check if the stand index is greater than 6 and the activity is not equal to 980.
-                if (data->m_stand_index > 6 && activity != 980)
-                {
-                    record->m_eye_angles.y = move->m_body + 180.f;
-                }
-                else if (data->m_stand_index > 4 && activity != 980)
-                {
-                    record->m_eye_angles.y = away_angle + 180.f;
-                }
-            }
-        }
-        else
-        {
-            record->m_eye_angles.y = move->m_body;
-            record->m_mode = Modes::RESOLVE_STOPPED_MOVING;
-        }
-    }
-
-	// stand2 -> no known last move.
-	record->m_mode = Modes::RESOLVE_STAND2;
-
-	// Calculate the `m_eye_angles.y` value based on the `data->m_stand_index2 % 6` value
-	switch (data->m_stand_index2 % 6) {
-	case 0:
-		record->m_eye_angles.y = away_angle + 180.f; // The angle 180 degrees away from `away`
-		break;
-
-	case 1:
-		record->m_eye_angles.y = record->m_body; // The current body angle
-		break;
-
-	case 2:
-		record->m_eye_angles.y = record->m_body + 180.f; // The current body angle plus 180 degrees
-		break;
-
-	case 3:
-		record->m_eye_angles.y = record->m_body + 110.f; // The current body angle plus 110 degrees
-		break;
-
-	case 4:
-		record->m_eye_angles.y = record->m_body - 110.f; // The current body angle minus 110 degrees
-		break;
-
-	case 5:
-		record->m_eye_angles.y = away_angle; // The `away` angle
-		break;
-
-	default:
-		break;
+	// For no-spread, call a separate resolver
+	if (g_menu.main.config.mode.get() == 1) {
+		StandNS(data, record);
+		return;
 	}
 
+	LagRecord* move = &data->m_walk_record;
+	if (move->m_sim_time > 0.f && !move->dormant() && !record->dormant() && data->m_last_move < 1) {
+		vec3_t delta = move->m_origin - record->m_origin;
+		if (delta.length() <= 100.f) {
+			data->m_moved = true;
+		}
+	}
+
+	// Check if the player is breaking their lby
+	bool breaking = CheckLBY(data->m_player, record, FindLastRecord(data));
+
+	// If we found a valid moving context
+	if (data->m_moved) {
+		float diff = math::NormalizedAngle(record->m_body - move->m_body);
+		float delta = record->m_anim_time - move->m_anim_time;
+
+		// First time resolving this player's movement
+		if (data->m_last_move < 1) {
+			record->m_mode = Modes::RESOLVE_LASTMOVE;
+			record->m_eye_angles.y = move->m_body;
+		}
+
+		// Resolve the player's body update
+		if (data->m_records.size() >= 2) {
+			LagRecord* previous = data->m_records[1].get();
+			if (previous) {
+				if (record->m_body != previous->m_body && data->m_body_index < 1) {
+					record->m_eye_angles.y = record->m_body;
+					data->m_body_update = record->m_anim_time + 1.1f;
+					iPlayers[record->m_player->index()] = false;
+					record->m_mode = Modes::RESOLVE_BODY;
+				}
+			}
+		}
+	}
+	else {
+		AntiFreestand(record);
+	}
 }
 
 void Resolver::StandNS(AimPlayer* data, LagRecord* record) {
