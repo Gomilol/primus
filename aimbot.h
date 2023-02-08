@@ -58,9 +58,6 @@ public:
 
 	float     m_best_angle;
 	float     m_best_angle_dist;
-	int		  m_cur_change;
-	int		  m_cur_dir;
-	int		  m_cur_tick;
 
 	float     m_old_body;
 	bool      m_has_body_updated;
