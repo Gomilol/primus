@@ -38,6 +38,8 @@ public:
 	void UpdateAnimations( );
 	void KillFeed( );
 
+	void MotionBlur();
+
 	void OnPaint( );
 	void OnMapload( );
 	void OnTick( CUserCmd* cmd );

@@ -410,6 +410,31 @@ bool Movement::WillCollide(float time, float change) {
 	return false;
 }
 
+void MoonWalk(CUserCmd* cmd) {
+	if (g_cl.m_local->m_MoveType() == MOVETYPE_NOCLIP || g_cl.m_local->m_MoveType() == MOVETYPE_LADDER)
+		return;
+
+	if (cmd->m_side_move < 0.f) {
+		cmd->m_buttons |= IN_MOVERIGHT;
+		cmd->m_buttons &= ~IN_MOVELEFT;
+	}
+
+	if (cmd->m_side_move > 0.f) {
+		cmd->m_buttons |= IN_MOVELEFT;
+		cmd->m_buttons &= ~IN_MOVERIGHT;
+	}
+
+	if (cmd->m_forward_move > 0.f) {
+		cmd->m_buttons |= IN_BACK;
+		cmd->m_buttons &= ~IN_FORWARD;
+	}
+
+	if (cmd->m_forward_move < 0.f) {
+		cmd->m_buttons |= IN_FORWARD;
+		cmd->m_buttons &= ~IN_BACK;
+	}
+	}
+
 void Movement::FixMove(CUserCmd* cmd, ang_t& wish_angles) {
 	vec3_t view_fwd, view_right, view_up, cmd_fwd, cmd_right, cmd_up;
 	math::AngleVectors(wish_angles, &view_fwd, &view_right, &view_up);
@@ -516,6 +541,9 @@ void Movement::AutoPeek(CUserCmd* cmd, float wish_yaw) {
 	else {
 		fired_shot = false;
 		start_position.clear();
+
+		if (g_hooks.b[XOR("sildewalk")])
+			MoonWalk(cmd);
 	}
 }
 

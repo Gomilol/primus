@@ -34,6 +34,7 @@ public:
 	bool m_running;
 	IMaterial* debugambientcube;
 	IMaterial* debugdrawflat;
+	std::vector< IMaterial* > m_materials;
 };
 
 extern Chams g_chams;
