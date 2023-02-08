@@ -595,6 +595,26 @@ void HVH::DoFakeAntiAim( ) {
 	case 6:
 		g_cl.m_cmd->m_view_angles.y = g_cl.m_view_angles.y;
 		break;
+	case 7: // chat GPT unhittableations
+	{
+		// Set base to opposite of direction
+		g_cl.m_cmd->m_view_angles.y = m_direction + 180.f;
+
+		// Apply random jitter between -90 and 90
+		float random_jitter = g_csgo.RandomFloat(-90.f, 90.f);
+		g_cl.m_cmd->m_view_angles.y += random_jitter;
+
+		// Apply random small offset between -5 and 5 
+		float small_offset = g_csgo.RandomFloat(-5.f, 5.f);
+		g_cl.m_cmd->m_view_angles.y += small_offset;
+
+		// Apply a slow spinning motion by adding a small offset each tick
+		static float spin_offset = 0.f;
+		spin_offset += 0.5f;
+		g_cl.m_cmd->m_view_angles.y += spin_offset;
+
+		break;
+	}
 
 	default:
 		break;
