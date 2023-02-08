@@ -6,7 +6,6 @@ namespace callbacks {
 	void ToggleThirdPerson( );
 	void ToggleFakeLatency( );
     void ToggleKillfeed( );
-	bool IsUsingBulletImpacts();
 	void SaveHotkeys( );
 	void ConfigLoad1( );
 	void ConfigLoad2( );
@@ -81,7 +80,6 @@ namespace callbacks {
 	bool IsAirDirCustom( );
 	bool IsFakeAntiAimRelative( );
 	bool IsFakeAntiAimJitter( );
-
 	
 	bool IsConfigMM( );
 	bool IsConfigNS( );

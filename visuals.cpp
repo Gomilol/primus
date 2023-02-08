@@ -147,27 +147,6 @@ void Visuals::ThirdpersonThink( ) {
 	}
 }
 
-void Visuals::ImpactData()
-{
-	if (!g_cl.m_processing) return;
-
-	if (!g_menu.main.visuals.bullet_impacts.get()) return;
-
-	//call this in fsn or whatever
-	static auto last_count = 0;
-	auto& client_impact_list = *(CUtlVector< client_hit_verify_t >*)((uintptr_t)g_cl.m_local + 0xBA84);
-
-	Color color = g_menu.main.visuals.client_impact.get();
-	color.a() = (g_menu.main.visuals.impact_alpha.get() * 2.55);
-
-	for (auto i = client_impact_list.Count(); i > last_count; i--) {
-		g_csgo.m_debug_overlay->AddBoxOverlay(client_impact_list[i - 1].pos, vec3_t(-2, -2, -2), vec3_t(2, 2, 2), ang_t(0, 0, 0), color.r(), color.g(), color.b(), color.a(), 4.f);
-	}
-
-	if (client_impact_list.Count() != last_count)
-		last_count = client_impact_list.Count();
-}
-
 void Visuals::Hitmarker( ) {
 	if( !g_menu.main.misc.hitmarker.get( ) )
 		return;
@@ -278,13 +257,6 @@ void Visuals::think( ) {
 	PenetrationCrosshair( );
 	Hitmarker( );
 	DrawPlantedC4( );
-
-	static auto cl_foot_contact_shadows = g_csgo.m_cvar->FindVar(HASH("cl_foot_contact_shadows"));
-	if (g_cl.m_processing && g_menu.main.players.chams_local_skeleton.get() && m_thirdperson)
-	{
-		cl_foot_contact_shadows->SetValue(0);
-		DrawSkeleton(g_cl.m_local, 255);
-	}
 }
 
 void Visuals::Spectators( ) {
@@ -1280,68 +1252,6 @@ void Visuals::RenderGlow( ) {
 		obj->m_render_full_bloom = false;
 		obj->m_color = { ( float ) color.r( ) / 255.f, ( float ) color.g( ) / 255.f, ( float ) color.b( ) / 255.f };
 		obj->m_alpha = opacity * blend;
-	}
-}
-
-void Visuals::override_material(bool ignoreZ, bool use_env, Color& color, IMaterial* material) {
-	material->SetFlag(MATERIAL_VAR_IGNOREZ, ignoreZ);
-	material->IncrementReferenceCount();
-
-	bool found;
-	auto var = material->FindVar("$envmaptint", &found);
-
-	if (found)
-		var->set_vec_value(color.r(), color.g(), color.b());
-
-	g_csgo.m_studio_render->ForcedMaterialOverride(material);
-}
-
-void Visuals::on_post_screen_effects() {
-	if (!g_cl.m_processing)
-		return;
-
-	const auto local = g_cl.m_local;
-	if (!local || !g_menu.main.misc.chams_shot.get() || !g_csgo.m_engine->IsInGame())
-		m_hit_matrix.clear();
-
-	if (m_hit_matrix.empty() || !g_csgo.m_model_render)
-		return;
-
-	auto ctx = g_csgo.m_material_system->get_render_context();
-	if (!ctx)
-		return;
-
-	auto it = m_hit_matrix.begin();
-
-	while (it != m_hit_matrix.end()) {
-		if (!it->state.m_pModelToWorld || !it->state.m_pRenderable || !it->state.m_pStudioHdr || !it->state.m_pStudioHWData ||
-			!it->info.m_renderable || !it->info.m_model_to_world || !it->info.m_model) {
-			++it;
-			continue;
-		}
-
-		auto alpha = 1.0f;
-		auto delta = g_csgo.m_globals->m_realtime - it->time;
-
-		if (delta > 0.0f) {
-			alpha -= delta;
-
-			if (delta > 1.0f) {
-				it = m_hit_matrix.erase(it);
-				continue;
-			}
-		}
-
-		auto alpha_color = (float)g_menu.main.misc.chams_shot_blend.get() / 255.f;
-
-		Color ghost_color = g_menu.main.misc.chams_shot_col.get();
-
-		g_csgo.m_render_view->SetBlend(alpha_color * alpha);
-		g_chams.SetupMaterial(g_chams.m_materials[g_menu.main.misc.chams_shot_mat.get()], ghost_color, true);
-		g_csgo.m_model_render->DrawModelExecute(ctx, it->state, it->info, it->pBoneToWorld);
-		g_csgo.m_model_render->ForceMat(nullptr);
-
-		++it;
 	}
 }
 

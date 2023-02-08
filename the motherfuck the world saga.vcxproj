@@ -229,6 +229,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="gameevents.h" />
     <ClInclude Include="gamerules.h" />
+    <ClInclude Include="gh.h" />
     <ClInclude Include="globalvars.h" />
     <ClInclude Include="glow.h" />
     <ClInclude Include="grenades.h" />

@@ -30,11 +30,6 @@ void callbacks::ToggleKillfeed( ) {
         g_csgo.ClearNotices( feed );
 }
 
-bool callbacks::IsUsingBulletImpacts()
-{
-	return g_menu.main.visuals.bullet_impacts.get();
-}
-
 void callbacks::SaveHotkeys( ) {
 	g_config.SaveHotkeys( );
 }
@@ -314,7 +309,6 @@ bool callbacks::IsFakeAntiAimRelative( ) {
 bool callbacks::IsFakeAntiAimJitter( ) {
 	return g_menu.main.antiaim.fake_yaw.get( ) == 3;
 }
-
 
 bool callbacks::IsConfigMM( ) {
 	return g_menu.main.config.mode.get( ) == 0;

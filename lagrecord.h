@@ -88,8 +88,6 @@ public:
 	float  m_away;
 	float  m_anim_time;
 
-	std::string resolver_text[65];
-
 	// other stuff.
 	float  m_interp_time;
 public:

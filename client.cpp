@@ -21,14 +21,10 @@ ulong_t __stdcall Client::init( void* arg ) {
 }
 
 void Client::DrawHUD() {
-	if (!g_hooks.b[XOR("watermark")])
-		return;
+	//	if( !g_csgo.m_engine->IsInGame( ) )
+			//return;
 
-	// colors
-	const auto col_background = Color(12, 12, 12, 255);
-	const auto col_accent = g_menu.main.config.menu_color.get();
-
-	// get time.
+		// get time.
 	time_t t = std::time(nullptr);
 	std::ostringstream time;
 	time << std::put_time(std::localtime(&t), ("%H:%M:%S"));
@@ -39,50 +35,14 @@ void Client::DrawHUD() {
 	// get tickrate.
 	int rate = (int)std::round(1.f / g_csgo.m_globals->m_interval);
 
-	// get fps.
-	int fps = 1.f / g_csgo.m_globals->m_abs_frametime;
-	std::string text = tfm::format(XOR("methylated | %s | delay: %ims | tick: %i | fps: %i | %s"), g_cl.m_user, ms, rate, fps, time.str().data());
-	render::FontSize_t size = render::menu_shade.size(text);
-
-	auto x = m_width - size.m_width - 18 - 10;
-	auto y = 10;
-	auto width = size.m_width + 18;
-	auto height = size.m_height + 12;
-	auto alpha = 255;
-	float add_text = 0;
-
-	if (g_hooks.b[XOR("watermark_line")]) {
-
-		height += 4;
-		add_text = 4;
-
-	}
-
+	std::string text = tfm::format(XOR("supremacy | rtt: %ims | rate: %i | %s"), ms, rate, time.str().data());
+	render::FontSize_t size = render::hudster.size(text);
 
 	// background.
-	render::rect_filled(x, y, width, height, col_background);
-
-	if (g_hooks.b[XOR("watermark_line")]) {
-
-		render::gradient(x + 7, y + 7, width / 2 - 7, 1, { 99, 160, 200, alpha }, { 179, 102, 181, alpha });
-		render::gradient(x + (width / 2), y + 7, width / 2 - 7, 1, { 179, 102, 181, alpha }, { 230, 217, 100, alpha });
-
-		render::gradient(x + 7, y + 7 + 1, width / 2 - 7, 1, { 49, 79, 99, alpha }, { 89, 50, 90, alpha });
-		render::gradient(x + (width / 2), y + 7 + 1, width / 2 - 7, 1, { 89, 50, 90, alpha }, { 114, 108, 49, alpha });
-	}
-
-	render::rect(x, y, width, height, { 5, 5, 5, alpha });
-	render::rect(x + 1, y + 1, width - 2, height - 2, { 60, 60, 60, alpha });
-	render::rect(x + 2, y + 2, width - 4, height - 4, { 40, 40, 40, alpha });
-	render::rect(x + 3, y + 3, width - 6, height - 6, { 40, 40, 40, alpha });
-	render::rect(x + 4, y + 4, width - 8, height - 8, { 40, 40, 40, alpha });
-	render::rect(x + 5, y + 5, width - 10, height - 10, { 60, 60, 60, alpha });
-	//render::rect_filled( m_width - size.m_width - 18, 10, size.m_width + 8, 2, col_accent );
+	render::rect_filled(m_width - size.m_width - 20, 10, size.m_width + 10, size.m_height + 2, { g_menu.main.config.menu_color.get() });
 
 	// text.
-	render::menu_shade.string(m_width - 19, 15 + add_text, { 255, 255, 255, 255 }, tfm::format(XOR(" | %s | delay: %ims | tick: %i | fps: %i | %s"), g_cl.m_user, ms, rate, fps, time.str().data()), render::ALIGN_RIGHT);
-	render::menu_shade.string(m_width - 19 - render::menu_shade.size(tfm::format(XOR(" | %s | delay: %ims | tick: %i | fps: %i | %s"), g_cl.m_user, ms, rate, fps, time.str().data())).m_width, 15 + add_text, col_accent, tfm::format(XOR("lated")), render::ALIGN_RIGHT);
-	render::menu_shade.string(m_width - 19 - render::menu_shade.size(tfm::format(XOR("lated | %s | delay: %ims | tick: %i | fps: %i | %s"), g_cl.m_user, ms, rate, fps, time.str().data())).m_width, 15 + add_text, { 255, 255, 255, 255 }, tfm::format(XOR("methy")), render::ALIGN_RIGHT);
+	render::hudster.string(m_width - 15, 10, { 0, 0, 0, 250 }, text, render::ALIGN_RIGHT);
 }
 
 void Client::KillFeed( ) {
@@ -110,23 +70,6 @@ void Client::KillFeed( ) {
 	}
 }
 
-void Client::MotionBlur()
-{
-	if (!g_csgo.m_cvar)
-		return;
-	int value = g_menu.main.misc.motion_blur.get();
-	static auto mat_motion_blur_enabled = g_csgo.m_cvar->FindVar(HASH("mat_motion_blur_enabled"));
-	static auto mat_motion_blur_strength = g_csgo.m_cvar->FindVar(HASH("mat_motion_blur_strength"));
-	if (value > 0) {
-		mat_motion_blur_enabled->SetValue(1);
-		mat_motion_blur_strength->SetValue(value);
-	}
-	else {
-		mat_motion_blur_enabled->SetValue(0);
-		mat_motion_blur_strength->SetValue(0);
-	}
-}
-
 void Client::OnPaint( ) {
 	// update screen size.
 	g_csgo.m_engine->GetScreenSize( m_width, m_height );
@@ -138,7 +81,6 @@ void Client::OnPaint( ) {
 
 	DrawHUD( );
 	KillFeed( );
-	MotionBlur();
 
 	// menu goes last.
 	g_gui.think( );
@@ -215,17 +157,29 @@ void Client::StartMove( CUserCmd* cmd ) {
 	m_shot = false;
 }
 
-void Client::BackupPlayers(bool restore) {
-	for (int i = 1; i <= g_csgo.m_globals->m_max_clients; ++i) {
-		Player* player = g_csgo.m_entlist->GetClientEntity<Player*>(i);
+void Client::BackupPlayers( bool restore ) {
+	if( restore ) {
+		// restore stuff.
+		for( int i{ 1 }; i <= g_csgo.m_globals->m_max_clients; ++i ) {
+			Player* player = g_csgo.m_entlist->GetClientEntity< Player* >( i );
 
-		if (!g_aimbot.IsValidTarget(player))
-			continue;
+			if( !g_aimbot.IsValidTarget( player ) )
+				continue;
 
-		if (restore)
-			g_aimbot.m_backup[i - 1].restore(player);
-		else
-			g_aimbot.m_backup[i - 1].store(player);
+			g_aimbot.m_backup[ i - 1 ].restore( player );
+		}
+	}
+
+	else {
+		// backup stuff.
+		for( int i{ 1 }; i <= g_csgo.m_globals->m_max_clients; ++i ) {
+			Player* player = g_csgo.m_entlist->GetClientEntity< Player* >( i );
+
+			if( !g_aimbot.IsValidTarget( player ) )
+				continue;
+
+			g_aimbot.m_backup[ i - 1 ].store( player );
+		}
 	}
 }
 
@@ -420,9 +374,12 @@ void Client::OnTick( CUserCmd* cmd ) {
 
 
 
-void Client::UpdateAnimations() {
+void Client::UpdateAnimations( ) {
 	if (!g_cl.m_local || !g_cl.m_processing)
 		return;
+
+	// set the interp flag on
+	g_cl.m_local->m_fEffects() &= ~EF_NOINTERP;
 
 	CCSGOPlayerAnimState* state = g_cl.m_local->m_PlayerAnimState();
 	if (!state)
@@ -502,7 +459,7 @@ void Client::UpdateLocalAnimations() {
 
 	// get tickbase in time and modify it.
 	const float v3 = game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase());
-	const float v4 = (v3 / g_csgo.m_globals->m_interval) + .0f;
+	const float v4 = (v3 / g_csgo.m_globals->m_interval) + .5f;
 
 	// set curtime and frametime.
 	g_csgo.m_globals->m_curtime = v3;

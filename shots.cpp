@@ -1,5 +1,4 @@
 #include "includes.h"
-
 Shots g_shots{ };
 
 void Shots::OnShotFire( Player *target, float damage, int bullets, LagRecord *record ) {
@@ -20,8 +19,10 @@ void Shots::OnShotFire( Player *target, float damage, int bullets, LagRecord *re
 		if ( target && i == 0 ) {
 			// increment total shots on this player.
 			AimPlayer *data = &g_aimbot.m_players[ target->index( ) - 1 ];
-			if ( data )
+			if (data) {
 				++data->m_shots;
+				g_cl.print(g_resolver.resolver_mode);
+			}
 		}
 
 		// add to tracks.

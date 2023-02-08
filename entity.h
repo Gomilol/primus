@@ -316,20 +316,6 @@ public:
 		return get< float >(g_entoffsets.m_flCycle);
 	}
 
-	__forceinline float& m_flThirdPersonRecoil() {
-		return get < float >(g_entoffsets.m_flThirdPersonRecoil);
-	}
-
-	__forceinline vec3_t wpn_shoot_pos() {
-		using fn_t = void(__thiscall*)(decltype(this), vec3_t& pos);
-
-		vec3_t eye_pos{};
-
-		(*reinterpret_cast<fn_t**>(this))[277u](this, eye_pos);
-
-		return eye_pos;
-	}
-
 	__forceinline float &m_flC4Blow() {
 		return get< float >(g_entoffsets.m_flC4Blow);
 	}

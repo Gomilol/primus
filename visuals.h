@@ -1,31 +1,11 @@
 #pragma once
 
-struct matrices_t {
-    int                         ent_index;
-    ModelRenderInfo_t           info;
-    DrawModelState_t            state;
-    matrix3x4_t                 pBoneToWorld[128] = { };
-    float                       time;
-    matrix3x4_t                 model_to_world;
-};
-
 struct OffScreenDamageData_t {
     float m_time, m_color_step;
     Color m_color;
 
     __forceinline OffScreenDamageData_t( ) : m_time{ 0.f }, m_color{ colors::white } {}
     __forceinline OffScreenDamageData_t( float time, float m_color_step, Color color ) : m_time{ time }, m_color{ color } {}
-};
-
-struct impact_info {
-    float x, y, z;
-    float time;
-};
-
-struct client_hit_verify_t {
-    vec3_t pos;
-    float time;
-    float expires;
 };
 
 class Visuals {
@@ -36,9 +16,6 @@ public:
 	vec2_t                                  m_crosshair;
 	bool                                    m_thirdperson;
 	float					                m_hit_start, m_hit_end, m_hit_duration;
-
-    std::vector< matrices_t >               m_hit_matrix;
-    std::vector<impact_info>                impacts;
 
     // info about planted c4.
     bool        m_c4_planted;
@@ -120,7 +97,6 @@ public:
 public:
 	static void ModulateWorld( );
 	void ThirdpersonThink( );
-    void ImpactData();
 	void Hitmarker( );
 	void NoSmoke( );
 	void think( );
@@ -138,8 +114,6 @@ public:
 	void DrawHistorySkeleton( Player* player, int opacity );
 	void DrawSkeleton( Player* player, int opacity );
 	void RenderGlow( );
-    void override_material(bool ignoreZ, bool use_env, Color& color, IMaterial* material);
-    void on_post_screen_effects();
 	void DrawHitboxMatrix( LagRecord* record, Color col, float time );
     void DrawBeams( );
 	void DebugAimbotPoints( Player* player );

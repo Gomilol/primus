@@ -138,7 +138,6 @@ public:
 	RecvVarProxy_t m_Pitch_original;
 	RecvVarProxy_t m_Body_original;
     RecvVarProxy_t m_Force_original;
-	std::unordered_map<std::string, bool> b;
 	RecvVarProxy_t m_AbsYaw_original;
 	DWORD						undefeated2;
 

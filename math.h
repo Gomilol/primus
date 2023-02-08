@@ -10,25 +10,9 @@ namespace math {
         return val * ( pi / 180.f );
     }
 
-
     // radians to degrees.
     __forceinline constexpr float rad_to_deg( float val ) {
         return val * ( 180.f / pi );
-    }
-
-    __forceinline float angle_diff(float f, float w) {
-        float delta;
-
-        delta = fmodf(f - w, 360.0f);
-        if (f > w) {
-            if (delta >= 180)
-                delta -= 360;
-        }
-        else {
-            if (delta <= -180)
-                delta += 360;
-        }
-        return delta;
     }
 
     // angle mod ( shitty normalize ).
@@ -52,7 +36,6 @@ namespace math {
     void  VectorAngles( const vec3_t& forward, ang_t& angles, vec3_t* up = nullptr );
     void  AngleVectors( const ang_t& angles, vec3_t* forward, vec3_t* right = nullptr, vec3_t* up = nullptr );
     float GetFOV( const ang_t &view_angles, const vec3_t &start, const vec3_t &end );
-    vec3_t CalcAngle(const vec3_t& vecSource, const vec3_t& vecDestination);
     void  VectorTransform( const vec3_t& in, const matrix3x4_t& matrix, vec3_t& out );
     void  VectorITransform( const vec3_t& in, const matrix3x4_t& matrix, vec3_t& out );
     void  MatrixAngles( const matrix3x4_t& matrix, ang_t& angles );

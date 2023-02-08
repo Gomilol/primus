@@ -52,16 +52,15 @@ public:
 	int       m_air_missed_shots;
 	LagRecord m_walk_record;
 
-	float m_stand_lby{}, m_move_lby{}, m_anti_fs_angle{};
-	int m_stand_ticks{}, m_misses_but_who_tf_cares{};
-	bool m_stand_resolving{};
-
 	int m_upd_index;
 	float     m_body_update;
 	bool      m_moved;
 
 	float     m_best_angle;
 	float     m_best_angle_dist;
+	int		  m_cur_change;
+	int		  m_cur_dir;
+	int		  m_cur_tick;
 
 	float     m_old_body;
 	bool      m_has_body_updated;

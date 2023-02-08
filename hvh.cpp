@@ -49,29 +49,36 @@ void HVH::AutoDirection( ) {
 	AutoTarget_t target{ 180.f + 1.f, nullptr };
 
 	// iterate players.
-    for ( int i{ 1 }; i <= g_csgo.m_globals->m_max_clients; ++i ) {
-        Player* player = g_csgo.m_entlist->GetClientEntity< Player* >( i );
+	for( int i{ 1 }; i <= g_csgo.m_globals->m_max_clients; ++i ) {
+		Player *player = g_csgo.m_entlist->GetClientEntity< Player * >( i );
 
-        if ( !player || player->dormant( ) || !g_aimbot.IsValidTarget( player ) )
-            continue;
+		// validate player.
+		if( !g_aimbot.IsValidTarget( player ) )
+			continue;
 
-        float fov = math::GetFOV( g_cl.m_view_angles, g_cl.m_shoot_pos, player->WorldSpaceCenter( ) );
-        if ( fov < target.fov ) {
-            target.fov = fov;
-            target.player = player;
-        }
-    }
+		// skip dormant players.
+		if( player->dormant( ) )
+			continue;
 
-    if ( !target.player ) {
-        if ( m_auto_last > 0.f && m_auto_time > 0.f &&
-            g_csgo.m_globals->m_curtime < ( m_auto_last + m_auto_time ) ) {
-            return;
-        }
+		// get best target based on fov.
+		float fov = math::GetFOV( g_cl.m_view_angles, g_cl.m_shoot_pos, player->WorldSpaceCenter( ) );
 
-        m_auto = math::NormalizedAngle( m_view - 180.f );
-        m_auto_dist = -1.f;
-        return;
-    }
+		if( fov < target.fov ) {
+			target.fov = fov;
+			target.player = player;
+		}
+	}
+
+	if( !target.player ) {
+		// we have a timeout.
+		if( m_auto_last > 0.f && m_auto_time > 0.f && g_csgo.m_globals->m_curtime < ( m_auto_last + m_auto_time ) )
+			return;
+
+		// set angle to backwards.
+		m_auto = math::NormalizedAngle( m_view - 180.f );
+		m_auto_dist = -1.f;
+		return;
+	}
 
 	/*
 	* data struct
@@ -588,6 +595,26 @@ void HVH::DoFakeAntiAim( ) {
 	case 6:
 		g_cl.m_cmd->m_view_angles.y = g_cl.m_view_angles.y;
 		break;
+	case 7: // chat GPT unhittableations
+	{
+		// Set base to opposite of direction
+		g_cl.m_cmd->m_view_angles.y = m_direction + 180.f;
+
+		// Apply random jitter between -90 and 90
+		float random_jitter = g_csgo.RandomFloat(-90.f, 90.f);
+		g_cl.m_cmd->m_view_angles.y += random_jitter;
+
+		// Apply random small offset between -5 and 5 
+		float small_offset = g_csgo.RandomFloat(-5.f, 5.f);
+		g_cl.m_cmd->m_view_angles.y += small_offset;
+
+		// Apply a slow spinning motion by adding a small offset each tick
+		static float spin_offset = 0.f;
+		spin_offset += 0.5f;
+		g_cl.m_cmd->m_view_angles.y += spin_offset;
+
+		break;
+	}
 
 	default:
 		break;

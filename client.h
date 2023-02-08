@@ -21,7 +21,14 @@ public:
 	__forceinline NetPos( float time, vec3_t pos ) : m_time{ time }, m_pos{ pos } {};
 };
 
+
 class Client {
+public:
+	struct incoming_seq_t {
+		std::ptrdiff_t m_in_seq{}, m_in_rel_state{};
+	};
+
+	std::vector < incoming_seq_t > m_inc_seq{};
 public:
 	// hack thread.
 	static ulong_t __stdcall init( void* arg );
@@ -37,8 +44,6 @@ public:
 	void SetAngles( );
 	void UpdateAnimations( );
 	void KillFeed( );
-
-	void MotionBlur();
 
 	void OnPaint( );
 	void OnMapload( );

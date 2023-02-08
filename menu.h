@@ -107,7 +107,6 @@ public:
 	MultiDropdown baim2;
 	Slider        baim_hp;
 	Keybind       baim_key;
-	
 
 public:
 	void init( ) {
@@ -547,7 +546,6 @@ public:
 	Dropdown base_angle_stand;
 	Dropdown body_fake_stand;
 
-
 	Dropdown pitch_walk;
 	Dropdown yaw_walk;
 	Slider   jitter_range_walk;
@@ -814,17 +812,14 @@ public:
 	Colorpicker   lby_update_color;
 
 	// col2.
-	Checkbox      chams_local_skeleton;
 	MultiDropdown skeleton;
 	Colorpicker   skeleton_enemy;
 	Colorpicker   skeleton_friendly;
-
 
 	MultiDropdown glow;
 	Colorpicker   glow_enemy;
 	Colorpicker   glow_friendly;
 	Slider        glow_blend;
-	Dropdown	  chams_entity_selection;
 	MultiDropdown chams_enemy;
 	Colorpicker   chams_enemy_vis;
 	Colorpicker   chams_enemy_invis;
@@ -840,7 +835,6 @@ public:
 	Colorpicker   chams_local_col;
 	Slider        chams_local_blend;
 	Checkbox      chams_local_scope;
-
 
 public:
 	void init( ) {
@@ -910,9 +904,6 @@ public:
 		glow.setup( XOR( "glow" ), XOR( "glow" ), { XOR( "enemy" ), XOR( "friendly" ) } );
 		RegisterElement( &glow, 1 );
 
-		chams_local_skeleton.setup("skeleton", "local_skel", true, false);
-		RegisterElement(&chams_local_skeleton, 1);
-
 		glow_enemy.setup( XOR( "enemy color" ), XOR( "glow_enemy" ), { 150, 200, 60 } );
 		RegisterElement( &glow_enemy, 1 );
 
@@ -943,13 +934,25 @@ public:
 		chams_enemy_history_blend.setup( "", XOR( "chams_history_blend" ), 10.f, 100.f, false, 0, 100.f, 1.f, XOR( L"%" ) );
 		RegisterElement( &chams_enemy_history_blend, 1 );
 
+		chams_friendly.setup( XOR( "chams friendly" ), XOR( "chams_friendly" ), { XOR( "visible" ), XOR( "invisible" ) } );
+		RegisterElement( &chams_friendly, 1 );
+
+		chams_friendly_vis.setup( XOR( "color visible" ), XOR( "chams_friendly_vis" ), { 255, 200, 0 } );
+		RegisterElement( &chams_friendly_vis, 1 );
+
+		chams_friendly_invis.setup( XOR( "color invisible" ), XOR( "chams_friendly_invis" ), { 255, 50, 0 } );
+		RegisterElement( &chams_friendly_invis, 1 );
+
+		chams_friendly_blend.setup( "", XOR( "chams_friendly_blend" ), 10.f, 100.f, false, 0, 100.f, 1.f, XOR( L"%" ) );
+		RegisterElement( &chams_friendly_blend, 1 );
+
 		chams_local.setup( XOR( "chams local" ), XOR( "chams_local" ) );
 		RegisterElement( &chams_local, 1 );
 
 		chams_local_col.setup( XOR( "color" ), XOR( "chams_local_col" ), { 255, 255, 200 } );
 		RegisterElement( &chams_local_col, 1 );
 
-		chams_local_blend.setup( "", XOR( "chams_local_blend" ), 0.f, 100.f, false, 0, 100.f, 1.f, XOR( L"%" ) );
+		chams_local_blend.setup( "", XOR( "chams_local_blend" ), 10.f, 100.f, false, 0, 100.f, 1.f, XOR( L"%" ) );
 		RegisterElement( &chams_local_blend, 1 );
 
 		chams_local_scope.setup( XOR( "blend when scoped" ), XOR( "chams_local_scope" ) );
@@ -971,10 +974,6 @@ public:
 	Dropdown	  world;
 	Checkbox      transparent_props;
 	Checkbox      enemy_radar;
-	Checkbox bullet_impacts;
-	Colorpicker client_impact;
-	Colorpicker server_impact;
-	Slider   impact_alpha;
 
 	// col2.
 	Checkbox      novisrecoil;
@@ -994,7 +993,6 @@ public:
 	Slider        spread_xhair_blend;
 	Checkbox      pen_crosshair;
 	MultiDropdown indicators;
-
 	Checkbox      tracers;
 	Checkbox      impact_beams;
 	Colorpicker   impact_beams_color;
@@ -1043,21 +1041,6 @@ public:
 
 		enemy_radar.setup( XOR( "force enemies on radar" ), XOR( "enemy_radar" ) );
 		RegisterElement( &enemy_radar );
-
-		bullet_impacts.setup(XOR("bullet impacts"), XOR("bullet_impacts"));
-		RegisterElement(&bullet_impacts);
-
-		client_impact.setup(XOR("client color"), XOR("client_impact"), Color(255, 0, 0));
-		client_impact.AddShowCallback(callbacks::IsUsingBulletImpacts);
-		RegisterElement(&client_impact);
-
-		server_impact.setup(XOR("server color"), XOR("server_impact"), Color(0, 0, 255));
-		server_impact.AddShowCallback(callbacks::IsUsingBulletImpacts);
-		RegisterElement(&server_impact);
-
-		impact_alpha.setup("impact alpha", XOR("impact_alpha"), 0.f, 100.f, true, 0, 60.f, 1.f, XOR(L"%"));
-		impact_alpha.AddShowCallback(callbacks::IsUsingBulletImpacts);
-		RegisterElement(&impact_alpha);
 
 		// col2.
 		novisrecoil.setup( XOR( "remove visual recoil" ), XOR( "novisrecoil" ) );
@@ -2316,13 +2299,6 @@ public:
 	Checkbox hitmarker;
 	Checkbox ragdoll_force;
 	Checkbox killfeed;
-	Checkbox      chams_shot;
-	Dropdown      chams_shot_mat;
-	Colorpicker   chams_shot_col;
-	Slider        chams_shot_blend;
-	Slider        chams_shot_fadetime;
-	Slider   motion_blur;
-	Checkbox watermark;
 	Checkbox ranks;
 
 public:
@@ -2414,27 +2390,9 @@ public:
 		ranks.setup( XOR( "reveal matchmaking ranks" ), XOR( "ranks" ) );
 		RegisterElement( &ranks, 1 );
 
-		watermark.setup(XOR("watermark"), XOR("watermark_bool"), true, false);
-		RegisterElement(&watermark);
-
 		killfeed.setup( XOR( "preserve killfeed" ), XOR( "killfeed" ) );
 		killfeed.SetCallback( callbacks::ToggleKillfeed );
 		RegisterElement( &killfeed, 1 );
-
-		motion_blur.setup("motion blur strength", XOR("motion_blur"), 0.f, 15.f, true, 0, 0.f, 1.f, XOR(L"x"));
-		RegisterElement(&motion_blur);
-
-		chams_shot.setup(XOR("shot chams"), XOR("chams_shot"));
-		RegisterElement(&chams_shot, 1);
-
-		chams_shot_mat.setup(XOR("chams material"), XOR("chams_shot_mat"), { XOR("material"), XOR("flat"), XOR("metallic"), XOR("shaded"), XOR("glow"), XOR("outline glow") });
-		RegisterElement(&chams_shot_mat, 1);
-
-		chams_shot_col.setup(XOR("color"), XOR("chams_shot_col"), { 255, 255, 255 });
-		RegisterElement(&chams_shot_col, 1);
-
-		chams_shot_blend.setup("", XOR("chams_shot_blend"), 1.f, 255.f, false, 0, 255.f, 1.f, XOR(L"%"));
-		RegisterElement(&chams_shot_blend, 1);
 	}
 };
 
