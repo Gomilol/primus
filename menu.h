@@ -2291,6 +2291,7 @@ public:
 	MultiDropdown notifications;
 	Keybind       last_tick_defuse;
 	Keybind       fake_latency;
+	Checkbox	  fake_latency_always;
 	Slider		  fake_latency_amt;
 
 	// col2.
@@ -2354,8 +2355,8 @@ public:
 				XOR( "heavyarmor" ),
 				XOR( "molotov" ),
 				XOR( "incgrenade" ),
-				XOR( "decoy" ),
-				XOR( "flashbang" ),
+				//XOR( "decoy" ),
+				//XOR( "flashbang" ),
 				XOR( "hegrenade" ),
 				XOR( "smokegrenade" ),
 			}, false );
@@ -2366,6 +2367,10 @@ public:
 
 		last_tick_defuse.setup( XOR( "last tick defuse" ), XOR( "last_tick_defuse" ) );
 		RegisterElement( &last_tick_defuse );
+
+
+		fake_latency_always.setup(XOR("fake latency always"), XOR("fake_latency_always"));
+		RegisterElement(&fake_latency_always );
 
 		fake_latency.setup( XOR( "fake latency" ), XOR( "fake_latency" ) );
 		fake_latency.SetToggleCallback( callbacks::ToggleFakeLatency );
