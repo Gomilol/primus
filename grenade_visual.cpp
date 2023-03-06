@@ -45,6 +45,11 @@ std::string to_string_with_precision(const T a_value, const int n = 3)
 	return out.str();
 }
 
+void delay(int milliseconds) { // cool timer function!
+	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+}
+
+
 void Visuals::DrawProjectile(Weapon* ent) {
 	vec2_t screen;
 	vec3_t origin = ent->GetAbsOrigin();
@@ -62,7 +67,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 	// draw molotov.
 	if (ent->is(HASH("CMolotovProjectile"))) {
-		Sleep(2);
+		delay(200);
 		//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
 		//	render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
 		if (dist <= 85) { // lets not see nades across the map yeah ?
@@ -73,7 +78,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 	else if (ent->is(HASH("CBaseCSGrenadeProjectile"))) {
 		const model_t* model = ent->GetModel();
-		Sleep(2);
+		delay(200);
 		if (model) {
 			// grab modelname.
 			std::string name{ ent->GetModel()->m_name };
@@ -83,7 +88,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 				//render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
 				//render::circle_outline(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 255));
 				if (dist <= 85) {
-					Sleep(2);
+					delay(200);
 					render::grenade.string(screen.x - 9, screen.y - 23, { 255,255,255,255 }, "k", render::ALIGN_LEFT);
 					render::circle(screen.x, screen.y - 10, 20, 360, Color(0, 0, 0, 100));
 				}
@@ -109,7 +114,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 		const double reltime = ((spawn_time + 7.031) - g_csgo.m_globals->m_curtime);
 		const double factor = reltime / 7.031;
 
-		Sleep(2);
+		delay(200);
 		// pandorel
 		if (dist <= 85) { // we render the circle like a boss
 			float radius = 144.f;
@@ -123,7 +128,7 @@ void Visuals::DrawProjectile(Weapon* ent) {
 		}
 
 	}
-	 // commented out due to a very odd crash that shouldn't appear.
+	// todo: finish these, they aren't that good looking.
 	else if (ent->is(HASH("CSmokeGrenadeProjectile"))) {
 		Weapon* pSmokeEffect = reinterpret_cast<Weapon*>(ent);
 		const float spawn_time = game::TICKS_TO_TIME(pSmokeEffect->m_nSmokeEffectTickBegin());
