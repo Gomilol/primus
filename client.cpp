@@ -370,6 +370,9 @@ void Client::OnTick( CUserCmd* cmd ) {
 	// restore curtime/frametime
 	// and prediction seed/player.
 	g_inputpred.restore( );
+	if (!g_tickshift.m_shifting) {
+		g_tickshift.handle_doubletap();
+	}
 }
 
 

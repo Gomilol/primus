@@ -48,7 +48,18 @@ float math::ApproachAngle( float target, float value, float speed ) {
 
     return value;
 }
+float math::AngleNormalize(float angle) {
+    if (angle > 180.f || angle < -180.f) {
+        auto revolutions = round(abs(angle / 360.f));
 
+        if (angle < 0.f)
+            angle = angle + 360.f * revolutions;
+        else
+            angle = angle - 360.f * revolutions;
+    }
+
+    return angle;
+}
 void math::VectorAngles( const vec3_t& forward, ang_t& angles, vec3_t *up ) {
     vec3_t  left;
     float   len, up_z, pitch, yaw, roll;

@@ -39,6 +39,8 @@ using ulong_t = unsigned long;
 #include <shlobj.h>
 #include <filesystem>
 #include <streambuf>
+#include <MinHook.h>
+
 
 // our custom wrapper.
 #include "unique_vector.h"
@@ -78,6 +80,7 @@ using ulong_t = unsigned long;
 #include "bonesetup.h"
 #include "hvh.h"
 #include "lagcomp.h"
+#include "shifting/tickbase_controller.hpp"
 #include "aimbot.h"
 #include "netdata.h"
 #include "chams.h"

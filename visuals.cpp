@@ -300,9 +300,9 @@ void Visuals::Spectators( ) {
 	}
 }
 
-void Visuals::StatusIndicators( ) {
+void Visuals::StatusIndicators() {
 	// dont do if dead.
-	if( !g_cl.m_processing )
+	if (!g_cl.m_processing)
 		return;
 
 	// compute hud size.
@@ -312,36 +312,46 @@ void Visuals::StatusIndicators( ) {
 	std::vector< Indicator_t > indicators{ };
 
 	// LC
-	if( g_menu.main.visuals.indicators.get( 1 ) ) {
-		if( g_cl.m_local->m_vecVelocity( ).length_2d( ) > 270.f || g_cl.m_lagcomp ) {
+	if (g_menu.main.visuals.indicators.get(1)) {
+		if (g_cl.m_local->m_vecVelocity().length_2d() > 270.f || g_cl.m_lagcomp) {
 			Indicator_t ind{ };
 			ind.color = g_cl.m_lagcomp ? 0xff15c27b : 0xff0000ff;
-			ind.text = XOR( "LC" );
+			ind.text = XOR("LC");
 
-			indicators.push_back( ind );
+			indicators.push_back(ind);
 		}
 	}
 
 	// LBY
-	if( g_menu.main.visuals.indicators.get( 0 ) ) {
+	if (g_menu.main.visuals.indicators.get(0)) {
 		// get the absolute change between current lby and animated angle.
-		float change = std::abs( math::NormalizedAngle( g_cl.m_body - g_cl.m_angle.y ) ); // practice test for fucking idiot
+		float change = std::abs(math::NormalizedAngle(g_cl.m_body - g_cl.m_angle.y)); // practice test for fucking idiot
 
 		Indicator_t ind{ };
 		ind.color = change > 35.f ? 0xff15c27b : 0xff0000ff;
-		ind.text = XOR( "LBY" );
-		indicators.push_back( ind );
+		ind.text = XOR("LBY");
+		indicators.push_back(ind);
 	}
 
 	// PING
-	if( g_menu.main.visuals.indicators.get( 2 ) && g_input.GetKeyState(g_menu.main.misc.fake_latency.get())) {
+	if (g_menu.main.visuals.indicators.get(2) && g_input.GetKeyState(g_menu.main.misc.fake_latency.get())) {
 		Indicator_t ind{ };
 		bool ping = g_menu.main.misc.fake_latency_always.get();
 		ind.color = g_aimbot.m_fake_latency || ping ? 0xff15c27b : 0xff0000ff;
-		ind.text = XOR( "PING" );
+		ind.text = XOR("PING");
 
-		indicators.push_back( ind );
+		indicators.push_back(ind);
 	}
+
+	if (g_tickshift.m_double_tap) {
+		float change = std::abs(math::AngleNormalize(g_tickshift.m_double_tap = g_menu.main.aimbot.doubletap.get()));
+		Indicator_t ind{ };
+		ind.color = change > 1 ? Color(150, 200, 60) : Color(255, 0, 0);
+		ind.text = XOR("DT");
+		if (g_menu.main.aimbot.doubletap.get())
+			indicators.push_back(ind);
+	}
+
 
 	if( indicators.empty( ) )
 		return;

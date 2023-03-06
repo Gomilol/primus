@@ -74,6 +74,8 @@
     <LinkIncremental>
     </LinkIncremental>
     <OutDir>.\output\release\</OutDir>
+    <IncludePath>C:\Users\chaz4\Documents\GitHub\primus\minhook;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\chaz4\Documents\GitHub\primus\minhook;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseEx|Win32'">
     <LinkIncremental />
@@ -208,6 +210,7 @@
     <ClInclude Include="callbacks.h" />
     <ClInclude Include="chams.h" />
     <ClInclude Include="checkbox.h" />
+    <ClInclude Include="checksum.hpp" />
     <ClInclude Include="client.h" />
     <ClInclude Include="clientclass.h" />
     <ClInclude Include="clientdll.h" />
@@ -261,6 +264,7 @@
     <ClInclude Include="matrix.h" />
     <ClInclude Include="memalloc.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="minhook\minhook.h" />
     <ClInclude Include="modules.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="multidropdown.h" />
@@ -277,6 +281,7 @@
     <ClInclude Include="render.h" />
     <ClInclude Include="resolver.h" />
     <ClInclude Include="sdk.h" />
+    <ClInclude Include="shifting\tickbase_controller.hpp" />
     <ClInclude Include="shots.h" />
     <ClInclude Include="skins.h" />
     <ClInclude Include="slider.h" />
@@ -309,6 +314,7 @@
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="chams.cpp" />
     <ClCompile Include="checkbox.cpp" />
+    <ClCompile Include="checksum.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="clientstate.cpp" />
     <ClCompile Include="colorpicker.cpp" />
@@ -342,6 +348,7 @@
     <ClCompile Include="knifebot.cpp" />
     <ClCompile Include="lagcomp.cpp" />
     <ClCompile Include="clientdll.cpp" />
+    <ClCompile Include="shifting\tickbase_controller.cpp" />
     <ClCompile Include="shots.cpp" />
     <ClCompile Include="skins.cpp" />
     <ClCompile Include="surface.cpp" />
@@ -363,6 +370,9 @@
     <ClCompile Include="slider.cpp" />
     <ClCompile Include="visuals.cpp" />
     <ClCompile Include="wndproc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="minhook\mihook-mtd.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

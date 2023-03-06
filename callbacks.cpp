@@ -24,6 +24,10 @@ void callbacks::ToggleFakeLatency( ) {
 	g_aimbot.m_fake_latency = !g_aimbot.m_fake_latency;
 }
 
+void callbacks::ToggleDoubletap() {
+	g_tickshift.m_double_tap = !g_tickshift.m_double_tap;
+}
+
 void callbacks::ToggleKillfeed( ) {
     KillFeed_t* feed = ( KillFeed_t* )g_csgo.m_hud->FindElement( HASH( "SFHudDeathNoticeAndBotStatus" ) );
     if( feed )

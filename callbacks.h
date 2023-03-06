@@ -5,6 +5,7 @@ namespace callbacks {
 	void ForceFullUpdate( );
 	void ToggleThirdPerson( );
 	void ToggleFakeLatency( );
+	void ToggleDoubletap();
     void ToggleKillfeed( );
 	void SaveHotkeys( );
 	void ConfigLoad1( );

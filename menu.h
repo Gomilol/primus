@@ -107,7 +107,7 @@ public:
 	MultiDropdown baim2;
 	Slider        baim_hp;
 	Keybind       baim_key;
-
+	Keybind		  doubletap;
 public:
 	void init( ) {
 		// title.
@@ -520,6 +520,10 @@ public:
 		baim_hp.setup( "", XOR( "baim_hp" ), 1.f, 50.f, false, 0, 20.f, 1.f, XOR( L"hp" ) );
 		baim_hp.AddShowCallback( callbacks::IsBaimHealth );
 		RegisterElement( &baim_hp, 1 );
+
+		doubletap.setup("doubletap", XOR("doubletap"));
+		doubletap.SetToggleCallback(callbacks::ToggleDoubletap);
+		RegisterElement(&doubletap, 1);
 
 		baim_key.setup( XOR( "body aim on key" ), XOR( "body aim on key" ) );
 		RegisterElement( &baim_key, 1 );

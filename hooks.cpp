@@ -1,5 +1,4 @@
 #include "includes.h"
-
 Hooks                g_hooks{ };;
 CustomEntityListener g_custom_entity_listener{ };;
 
@@ -117,7 +116,17 @@ void Force_proxy( CRecvProxyData *data, Address ptr, Address out ) {
 		g_hooks.m_Force_original( data, ptr, out );
 }
 
+auto __fastcall ShouldSkipAnimationFrame(void* ecx, void* edx) -> bool {
+	return false;
+}
+
 void Hooks::init( ) {
+
+	MH_Initialize();
+	MH_CreateHook(pattern::find(PE::GetModule(HASH("engine.dll")), XOR("55 8B EC 81 EC ? ? ? ? 53 56 57 8B 3D ? ? ? ? 8A")), &CL_Move, reinterpret_cast<void**>(&o_CLMove));
+	MH_CreateHook(pattern::find(PE::GetModule(HASH("client.dll")), XOR("57 8B F9 8B 07 8B 80 ? ? ? ? FF D0 84 C0 75 02")), &ShouldSkipAnimationFrame, NULL);
+	MH_EnableHook(MH_ALL_HOOKS);
+
 	// hook wndproc.
 	m_old_wndproc = ( WNDPROC )g_winapi.SetWindowLongA( g_csgo.m_game->m_hWindow, GWL_WNDPROC, util::force_cast< LONG >( Hooks::WndProc ) );
 
@@ -131,6 +140,7 @@ void Hooks::init( ) {
 	m_client.add( CHLClient::LEVELSHUTDOWN, util::force_cast( &Hooks::LevelShutdown ) );
 	//m_client.add( CHLClient::INKEYEVENT, util::force_cast( &Hooks::IN_KeyEvent ) );
 	m_client.add( CHLClient::FRAMESTAGENOTIFY, util::force_cast( &Hooks::FrameStageNotify ) );
+	m_client.add(23, util::force_cast(&Hooks::WriteUsercmdDeltaToBuffer));
 
 	m_engine.init( g_csgo.m_engine );
 	m_engine.add( IVEngineClient::ISCONNECTED, util::force_cast( &Hooks::IsConnected ) );

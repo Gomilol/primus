@@ -743,6 +743,9 @@ void HVH::SendPacket( ) {
 		// limit of lag.
 		int limit = std::min( ( int )g_menu.main.antiaim.lag_limit.get( ), g_cl.m_max_lag );
 
+		if (g_tickshift.m_double_tap) {
+			limit = 0;
+		}
 		// indicates wether to lag or not.
 		bool active{ };
 
