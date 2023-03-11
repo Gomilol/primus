@@ -342,9 +342,9 @@ void Visuals::StatusIndicators() {
 
 		indicators.push_back(ind);
 	}
-
+	// DOUBLETAP
 	if (g_tickshift.m_double_tap) {
-		float change = std::abs(math::AngleNormalize(g_tickshift.m_double_tap = g_menu.main.aimbot.doubletap.get()));
+		float change = std::abs(math::AngleNormalize(g_tickshift.m_charged_ticks - g_menu.main.aimbot.doubletap.get()));
 		Indicator_t ind{ };
 		ind.color = change > 1 ? Color(150, 200, 60) : Color(255, 0, 0);
 		ind.text = XOR("DT");
